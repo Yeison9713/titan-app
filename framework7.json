@@ -1,0 +1,25 @@
+{
+  "cwd": "C:\\beta\\titan",
+  "type": [
+    "capacitor"
+  ],
+  "name": "titan-app",
+  "framework": "vue",
+  "template": "split-view",
+  "bundler": "vite",
+  "cssPreProcessor": "scss",
+  "theming": {
+    "customColor": false,
+    "color": "#007aff",
+    "darkTheme": false,
+    "iconFonts": true,
+    "fillBars": false
+  },
+  "customBuild": false,
+  "pkg": "io.framework7.myapp",
+  "capacitor": {
+    "platforms": [
+      "android"
+    ]
+  }
+}
