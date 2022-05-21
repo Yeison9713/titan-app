@@ -3,26 +3,26 @@
     <f7-view>
       <f7-page>
         <f7-navbar :title="entity"></f7-navbar>
-        <!-- <f7-block-title>Left View Navigation</f7-block-title> -->
+        <f7-block-title>Navegación</f7-block-title>
 
         <f7-list>
           <f7-list-item
             v-for="item in array_list"
+            view="#main-view"
             :key="item"
-            :link="item.submenu ? '#' : false"
             :title="item.name"
+            :link="item.submenu ? '#' : false"
             @click="validate_menu(item)"
           ></f7-list-item>
         </f7-list>
       </f7-page>
     </f7-view>
-    <!-- {{ menu_user_x }} -->
   </f7-panel>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-// console.log(mapGetters);
+import { f7, f7ready } from "framework7-vue";
 export default {
   props: {
     entity: {
@@ -40,7 +40,7 @@ export default {
 
   async mounted() {
     this.menu_list = await this.order_list(this.menu_user);
-    this.validate_menu({ id: "" });
+    this.set_option_id();
   },
 
   computed: {
@@ -49,29 +49,22 @@ export default {
     }),
   },
 
-  watch: {
-    menu_user_x: function (val) {
-      console.log(val);
-    },
-  },
-
   methods: {
-    async order_list(data) {
-      let new_data = [];
+    validate_menu(item = {}) {
+      if (item.submenu || item.name == "Atras") this.set_option_id(item);
 
-      for await (let item of data) {
-        new_data.push({ ...item });
+      if (item.link) {
+        f7.panel.close();
 
-        if (item.submenu) {
-          let other = await this.order_list(item.submenu);
-          new_data = new_data.concat(other);
-        }
+        setTimeout(() => {
+          f7.views.main.router.navigate(`${item.link}`, {
+            reloadCurrent: true,
+          });
+        }, 500);
       }
-
-      return new_data;
     },
 
-    validate_menu(item = {}) {
+    set_option_id(item = { id: "" }) {
       let data = [];
 
       if (item.name == "Atras") item.id = String(item.id).slice(0, -1) || "";
@@ -88,6 +81,21 @@ export default {
 
     set_back_list(list, id) {
       return list.concat({ name: "Atras", id });
+    },
+
+    async order_list(data) {
+      let new_data = [];
+
+      for await (let item of data) {
+        new_data.push({ ...item });
+
+        if (item.submenu) {
+          let other = await this.order_list(item.submenu);
+          new_data = new_data.concat(other);
+        }
+      }
+
+      return new_data;
     },
   },
 };

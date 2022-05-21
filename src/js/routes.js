@@ -3,6 +3,8 @@ import NotFoundPage from '../pages/404.vue';
 import Ingreso from '../pages/ingreso.vue';
 
 import User from "../pages/user/index.vue"
+import SyncApp from "../pages/user/syncApp.vue"
+
 
 var routes = [
   {
@@ -12,6 +14,7 @@ var routes = [
 
   securedRoute('/ingreso/', Ingreso),
   securedRoute('/usuario/', User),
+  securedRoute('/usuario/synapp/', SyncApp),
 
   {
     path: '(.*)',

@@ -1,7 +1,7 @@
 <template>
   <f7-app v-bind="f7params">
     <!-- Your main view, should have "view-main" class -->
-    <f7-view main class="safe-areas" url="/"></f7-view>
+    <f7-view id="main-view" main class="safe-areas" url="/"></f7-view>
   </f7-app>
 </template>
 <script>
@@ -23,7 +23,7 @@ export default {
       id: "io.framework7.myapp", // App bundle ID
 
       // App routes
-      routes,
+      routes: routes,
 
       // Input settings
       input: {

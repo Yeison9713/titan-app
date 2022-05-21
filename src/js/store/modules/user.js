@@ -57,6 +57,11 @@ export default {
                             },
                         ],
                     },
+                    {
+                        id: 22,
+                        name: "Actualizar app",
+                        link: '/usuario/synapp/'
+                    }
                 ],
             },
         ],
