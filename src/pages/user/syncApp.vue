@@ -59,3 +59,11 @@
     </f7-card>
   </f7-page>
 </template>
+
+<script>
+export default {
+  data() {
+    return {};
+  },
+};
+</script>

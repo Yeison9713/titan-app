@@ -2,7 +2,10 @@
   <f7-panel left cover :visible-breakpoint="960">
     <f7-view>
       <f7-page>
-        <f7-navbar :title="entity"></f7-navbar>
+        <f7-navbar
+          :title="company"
+          :subtitle="format_num(id_company)"
+        ></f7-navbar>
         <f7-block-title>Navegación</f7-block-title>
 
         <f7-list>
@@ -23,9 +26,15 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { format_num } from "../js/utils/plugins";
+
 export default {
   props: {
-    entity: {
+    company: {
+      type: String,
+      default: null,
+    },
+    id_company: {
       type: String,
       default: null,
     },
@@ -45,11 +54,12 @@ export default {
 
   computed: {
     ...mapGetters({
-      menu_user: "usuario/get_menu_user",
+      menu_user: "user/get_menu",
     }),
   },
 
   methods: {
+    format_num,
     validate_link(item) {
       if (item.submenu) return "#";
       if (item.link) return item.link;

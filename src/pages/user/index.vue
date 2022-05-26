@@ -11,32 +11,55 @@
       </f7-nav-left>
 
       <f7-nav-title-large>titan-app</f7-nav-title-large>
+
+      <f7-nav-right>
+        <f7-link
+          :style="{ color: '#FFF' }"
+          icon-material="more_vert"
+          popover-open="#user-action"
+        ></f7-link>
+        <f7-popover id="user-action" :backdrop="false">
+          <f7-list>
+            <f7-list-item popover-close>
+              <b>{{ info.user.name }}</b>
+              <!-- <f7-badge color="blue">OPERADOR</f7-badge> -->
+            </f7-list-item>
+
+            <f7-list-item
+              link="#"
+              popover-close
+              title="Salir"
+              @click="logout"
+            ></f7-list-item>
+          </f7-list>
+        </f7-popover>
+      </f7-nav-right>
     </f7-navbar>
-    <Nav :entity="info_user.entity"></Nav>
+    <Nav :company="info.company.name" :id_company="info.company.id"></Nav>
   </f7-page>
 </template>
 
 
 <script>
 import Nav from "../../components/nav.vue";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   components: {
     Nav,
   },
   data() {
-    return {
-      info_user: {
-        entity: "El granjero",
-        user_name: "Jesus Mesias",
-        id_user: 1119893100,
-      },
-      array_list: [],
-
-      menu_list: [],
-    };
+    return {};
   },
 
-  methods: {},
+  computed: {
+    ...mapGetters({
+      info: "user/get_info",
+    }),
+  },
+
+  methods: {
+    ...mapActions({ logout: "user/logout" }),
+  },
 };
 </script>

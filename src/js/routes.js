@@ -1,3 +1,4 @@
+import { store } from '../js/store/index'
 
 import NotFoundPage from '../pages/404.vue';
 import Ingreso from '../pages/ingreso.vue';
@@ -9,7 +10,7 @@ import SyncApp from "../pages/user/syncApp.vue"
 var routes = [
   {
     path: '/',
-    redirect: '/usuario/'
+    redirect: '/ingreso/'
   },
 
   securedRoute('/ingreso/', Ingreso),
@@ -30,7 +31,17 @@ function securedRoute(path, component, required) {
       required: required || false,
     },
     async({ to, from, resolve, reject }) {
-      resolve({ component: component })
+      let info = store.getters['user/get_info']
+      const required = to.route.meta ? to.route.meta.required : false
+
+      if (required && !info) {
+        resolve({ component: Ingreso })
+      } else if (info && info.token && to.path == '/ingreso/') {
+        resolve({ component: User })
+      } else {
+        resolve({ component: component })
+      }
+
     }
   }
 }

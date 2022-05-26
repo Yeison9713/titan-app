@@ -26,8 +26,13 @@
             type="text"
             floating-label
             error-message="Campo obligatorio"
+            required
             clear-button
             outline
+            v-model:value="form.company"
+            :error-message-force="errores.company"
+            @input="errores.company = false"
+            autofocus
           >
           </f7-list-input>
 
@@ -36,9 +41,12 @@
             type="text"
             floating-label
             error-message="Campo obligatorio"
+            required
             clear-button
             outline
-            class="input-login"
+            v-model:value="form.user"
+            :error-message-force="errores.user"
+            @input="errores.user = false"
           >
           </f7-list-input>
 
@@ -49,11 +57,14 @@
                   label="Contraseña"
                   :type="show_pass ? 'text' : 'password'"
                   floating-label
-                  v-model:value="form.clave"
                   error-message="Campo obligatorio"
+                  required
                   clear-button
                   outline
                   class="input-login"
+                  v-model:value="form.password"
+                  :error-message-force="errores.password"
+                  @input="errores.password = false"
                 >
                 </f7-list-input>
               </f7-col>
@@ -86,7 +97,7 @@
               :style="{
                 width: '100%',
               }"
-              href="/usuario/"
+              @click="validate_login"
             >
               Ingresar
             </f7-button>
@@ -123,7 +134,11 @@
 
 <script>
 import { f7 } from "framework7-vue";
+import { request_titan } from "../js/utils/request_titan";
 import logo from "../assets/logo.png";
+import { mapGetters, mapActions } from "vuex";
+
+import { loader, toast } from "../js/utils/plugins";
 
 export default {
   data() {
@@ -131,7 +146,16 @@ export default {
       logo,
       show_pass: false,
       recordar_cuenta: false,
-      form: {},
+      form: {
+        company: null,
+        user: null,
+        password: null,
+      },
+      errores: {
+        company: false,
+        user: false,
+        password: false,
+      },
       info_app: {},
     };
   },
@@ -143,7 +167,54 @@ export default {
     }
   },
 
-  methods: {},
+  computed: {
+    ...mapGetters({
+      ip_service: "config/get_service",
+      get_url: "config/get_url",
+    }),
+  },
+
+  methods: {
+    ...mapActions({
+      save_user: "user/login",
+    }),
+
+    validate_login() {
+      let { form, errores } = this;
+
+      if (!form.company) errores.company = true;
+      else if (!form.user) errores.user = true;
+      else if (!form.password) errores.password = true;
+      else {
+        loader(true);
+
+        let data = {
+          data: {
+            importarhtml: `${form.company}|${form.user}|${form.password}|0|`,
+          },
+
+          url: this.get_url("login"),
+        };
+
+        request_titan({ url: this.ip_service, data })
+          .then((res) => {
+            let { message } = res;
+
+            message.push(form.company);
+            message.push(form.user);
+            message.push(form.password);
+
+            this.save_user({ data: message });
+
+            loader(false);
+          })
+          .catch((error) => {
+            loader(false);
+            toast(error?.message[0] || error);
+          });
+      }
+    },
+  },
 };
 </script>
 

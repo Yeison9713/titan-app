@@ -2,7 +2,7 @@ export default {
     namespaced: true,
 
     state: {
-        menu_user: [
+        menu: [
             {
                 id: 1,
                 name: "Procesos",
@@ -68,6 +68,45 @@ export default {
     },
 
     getters: {
-        get_menu_user: (state) => state.menu_user,
+        get_menu: (state) => state.menu,
+        get_info: (state) => {
+            let info = {}
+
+            try {
+                info = JSON.parse(sessionStorage.info) || {}
+            } catch (error) { }
+
+            return info
+        }
+    },
+
+    actions: {
+        login(state, { data }) {
+            let datos = {
+                token: data.at(0),
+                code: data.at(4),
+
+                company: {
+                    id: data.at(5),
+                    name: data.at(2),
+                },
+
+                user: {
+                    id: data.at(6),
+                    name: data.at(1),
+                    full_name: data.at(3),
+                    password: data.at(7),
+                },
+            }
+
+            sessionStorage.setItem("info", JSON.stringify(datos));
+            setTimeout(() => { location.reload() }, 250);
+        },
+
+        logout() {
+            sessionStorage.clear()
+            setTimeout(() => { location.reload() }, 250);
+        }
+
     }
 }

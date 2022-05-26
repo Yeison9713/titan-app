@@ -59,3 +59,12 @@ body .page {
 .dark .navbar-large.navbar-transparent {
   --f7-navbar-large-title-text-color: #fff;
 }
+
+.navbar-inner .title {
+  --f7-navbar-title-font-size: 16px;
+  --f7-navbar-title-font-weight: 500;
+}
+
+.navbar-inner .title span {
+  text-align: right;
+}
