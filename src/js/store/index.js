@@ -1,11 +1,15 @@
 
 import { createStore } from 'vuex';
 import user from './modules/user'
-import config from './modules/config'
+import setting from './modules/setting'
+import products from './modules/products'
+import customers from './modules/customers'
 
 export const store = createStore({
   modules: {
     user,
-    config
+    setting,
+    products,
+    customers
   }
 })

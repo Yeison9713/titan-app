@@ -169,8 +169,8 @@ export default {
 
   computed: {
     ...mapGetters({
-      ip_service: "config/get_service",
-      get_url: "config/get_url",
+      ip_service: "setting/get_service",
+      get_url: "setting/get_url",
     }),
   },
 

@@ -4,7 +4,7 @@ import imask from 'imask'
 let toast = (text) => {
     f7.toast
         .create({
-            position: 'top',
+            position: 'bottom',
             text,
             closeTimeout: 5000,
             closeButton: true,
