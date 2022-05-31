@@ -9,7 +9,7 @@ export default {
                 submenu: [
                     {
                         id: 11,
-                        name: "remisiones",
+                        name: "Remisiones",
                         submenu: [
                             {
                                 id: 111,
@@ -73,7 +73,7 @@ export default {
             let info = {}
 
             try {
-                info = JSON.parse(sessionStorage.info) || {}
+                info = JSON.parse(localStorage.info) || {}
             } catch (error) { }
 
             return info
@@ -99,12 +99,12 @@ export default {
                 },
             }
 
-            sessionStorage.setItem("info", JSON.stringify(datos));
+            localStorage.setItem("info", JSON.stringify(datos));
             setTimeout(() => { location.reload() }, 250);
         },
 
         logout() {
-            sessionStorage.clear()
+            localStorage.clear()
             setTimeout(() => { location.reload() }, 250);
         }
 

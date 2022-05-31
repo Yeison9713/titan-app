@@ -68,3 +68,9 @@ body .page {
 .navbar-inner .title span {
   text-align: right;
 }
+
+.treeview-item {
+  // --f7-treeview-item-padding-left: 0px;
+  --f7-treeview-children-offset: 15px;
+  // --f7-treeview-item-padding-right: 0px;
+}

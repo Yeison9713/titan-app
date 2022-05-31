@@ -35,7 +35,7 @@
         </f7-popover>
       </f7-nav-right>
     </f7-navbar>
-    <Nav :company="info.company.name" :id_company="info.company.id"></Nav>
+    <Nav :user="info.user.name" :id_company="info.company.id"></Nav>
   </f7-page>
 </template>
 

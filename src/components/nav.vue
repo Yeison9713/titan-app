@@ -1,26 +1,45 @@
 <template>
   <f7-panel left cover :visible-breakpoint="960">
-    <f7-view>
-      <f7-page>
-        <f7-navbar
-          :title="company"
-          :subtitle="format_num(id_company)"
-        ></f7-navbar>
-        <f7-block-title>Navegación</f7-block-title>
+    <div class="header_nav">
+      <div class="content_nav">
+        <div class="siglas">
+          <div class="content_siglas">
+            {{ acronym(user) }}
+          </div>
+        </div>
 
-        <f7-list>
-          <f7-list-item
-            v-for="item in array_list"
+        <div class="data_user">
+          <span>{{ user }}</span>
+        </div>
+      </div>
+    </div>
+
+    <f7-block class="no-padding">
+      <f7-treeview v-for="item in menu_user" :key="item">
+        <f7-block-title>{{ item.name }}</f7-block-title>
+
+        <f7-treeview-item
+          v-for="submenu in item.submenu"
+          :key="submenu"
+          :label="submenu.name"
+          :item-toggle="submenu.link ? false : true"
+          view=".safe-areas"
+          :panel-close="submenu.link ? true : false"
+          :toggle="submenu.link ? false : true"
+          :link="validate_link(submenu)"
+        >
+          <f7-treeview-item
+            v-for="submenu2 in submenu.submenu"
+            :key="submenu2"
+            :label="submenu2.name"
             view=".safe-areas"
-            :key="item"
-            :title="item.name"
-            :panel-close="item.link ? true : false"
-            :link="validate_link(item)"
-            @click="validate_menu(item)"
-          ></f7-list-item>
-        </f7-list>
-      </f7-page>
-    </f7-view>
+            :panel-close="submenu2.link ? true : false"
+            :link="validate_link(submenu2)"
+          >
+          </f7-treeview-item>
+        </f7-treeview-item>
+      </f7-treeview>
+    </f7-block>
   </f7-panel>
 </template>
 
@@ -30,7 +49,7 @@ import { format_num } from "../js/utils/plugins";
 
 export default {
   props: {
-    company: {
+    user: {
       type: String,
       default: null,
     },
@@ -41,16 +60,10 @@ export default {
   },
 
   data() {
-    return {
-      array_list: [],
-      menu_list: [],
-    };
+    return {};
   },
 
-  async mounted() {
-    this.menu_list = await this.order_list(this.menu_user);
-    this.set_option_id();
-  },
+  async mounted() {},
 
   computed: {
     ...mapGetters({
@@ -60,50 +73,56 @@ export default {
 
   methods: {
     format_num,
+    acronym(data = "") {
+      return data.match(/\b([A-Z])/g).join("");
+    },
     validate_link(item) {
       if (item.submenu) return "#";
       if (item.link) return item.link;
 
       return false;
     },
-
-    validate_menu(item = {}) {
-      if (item.submenu || item.name == "Atras") this.set_option_id(item);
-    },
-
-    set_option_id(item = { id: "" }) {
-      let data = [];
-
-      if (item.name == "Atras") item.id = String(item.id).slice(0, -1) || "";
-
-      for (const item2 of this.menu_list) {
-        let id = String(item2.id).slice(0, -1);
-        data = id == item.id ? data.concat(item2) : data;
-      }
-
-      if (item.id) data = this.set_back_list(data, item.id);
-
-      this.array_list = data;
-    },
-
-    set_back_list(list, id) {
-      return list.concat({ name: "Atras", id });
-    },
-
-    async order_list(data) {
-      let new_data = [];
-
-      for await (let item of data) {
-        new_data.push({ ...item });
-
-        if (item.submenu) {
-          let other = await this.order_list(item.submenu);
-          new_data = new_data.concat(other);
-        }
-      }
-
-      return new_data;
-    },
   },
 };
 </script>
+
+<style lang="sass">
+.header_nav,
+.content_nav,
+.siglas,
+.content_siglas
+  display: flex
+  font-size: 16px
+  font-weight: 600
+
+.header_nav
+  width: 100%
+  height: 80px
+  align-items: center
+  background: #0c57b2
+  color: #fff
+
+.content_nav
+  width: 100%
+
+  .siglas
+    width: 20%
+    justify-content: center
+    text-align: center
+
+  .data_user
+    display: flex
+    align-items: center
+    width: 80%
+    font-size: 14px
+
+.content_siglas
+  justify-content: center
+  text-align: center
+  align-items: center
+  width: 40px
+  height: 40px
+  background-color: #f5d4df
+  color: #0c57b2
+  border-radius: 100%
+</style>
