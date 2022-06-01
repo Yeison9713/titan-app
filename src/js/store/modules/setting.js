@@ -6,7 +6,7 @@ const table = 'setting'
 export default {
     namespaced: true,
     state: {
-        ip_service: "http://titan-app.com:8084/inc/api.php",
+        ip_service: "https://server1ts.net//financiero/inc/index.php",
 
         path: "https://server1ts.net/",
 
@@ -24,7 +24,7 @@ export default {
         get_service: (state) => state.ip_service,
 
         get_url: (state) => (name) => {
-            return `${state.path}${state.routes[name]}`
+            return `${state.routes[name]}`
         },
 
         get_data: (state) => state.data

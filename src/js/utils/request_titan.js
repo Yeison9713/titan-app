@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 const error_console = (form, error, data = null) => {
     console.debug('-> Error:', form, error, data)
 }
@@ -25,9 +23,12 @@ const request_titan = ({ url, data = {}, method = 'POST', header = {} }) => {
 
         let formData = new FormData();
         for (var i in data) {
-            let temp = i == 'url' ? data[i] : JSON.stringify(data[i])
-            formData.append(i, temp)
+            if(i == 'url') { formData.append(i, data[i]) }
+            else if(i == 'data') { formData.append(i, data[i].importarhtml) }
+            else { formData.append(i, JSON.stringify(data[i])) }
         }
+        
+        formData.append('method', '')
 
         fetch(url, { body: formData, method })
             .then(e => e.text())
