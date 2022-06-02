@@ -33,8 +33,10 @@ const idb = {
     get_db: () => {
         let db = new Dexie(DB_NAME)
         db.version(DB_VERSION).stores({
+            user: '++id',
             setting: '++id',
             products: '&[codigo_list+codigopr_list]',
+            presentations: '&codigo_rep',
             customers: '&[identificacion_rut]',
         })
 

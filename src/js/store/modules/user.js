@@ -1,7 +1,12 @@
+import { idb } from '../../utils/idb'
+
+const table = 'user'
+
 export default {
     namespaced: true,
 
     state: {
+        data_config: {},
         menu: [
             {
                 id: 1,
@@ -77,6 +82,14 @@ export default {
             } catch (error) { }
 
             return info
+        },
+
+        get_data_config: (state) => state.data_config
+    },
+
+    mutations: {
+        set_data(state, data) {
+            state.data_config = { ...data[0] }
         }
     },
 
@@ -106,6 +119,37 @@ export default {
         logout() {
             localStorage.clear()
             setTimeout(() => { location.reload() }, 250);
+        },
+
+        save_config(state, data) {
+            return new Promise(async (resolve, reject) => {
+
+                try {
+
+                    await idb.set_db({ table, data })
+                    state.commit('set_data', data)
+                    resolve()
+
+                } catch (error) {
+                    reject(error)
+                }
+
+            })
+        },
+
+        query_data_config(state) {
+            return new Promise(async (resolve, reject) => {
+                try {
+
+                    let data = await idb.get(table)
+                    state.commit('set_data', data)
+                    resolve()
+
+                } catch (error) {
+                    reject(error)
+                }
+
+            })
         }
 
     }

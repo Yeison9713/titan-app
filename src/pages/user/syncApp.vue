@@ -53,27 +53,58 @@
               :title="item.text"
               link="#"
               :footer="item.footer"
+              @click="validate_popup(item)"
             ></f7-list-item>
           </f7-list>
         </f7-row>
       </f7-card-content>
     </f7-card>
+
+    <configUser
+      :estado="popup_config.estado"
+      @closed="popup_config.estado = false"
+    ></configUser>
+
+    <lookup
+      :estado="popup_lookup.estado"
+      :params="popup_lookup.params"
+      @closed="popup_lookup.estado = false"
+    ></lookup>
   </f7-page>
 </template>
 
 <script>
+import { f7 } from "framework7-vue";
 import { store } from "../../js/store/index";
 import { format_num, loader, toast } from "../../js/utils/plugins";
 import { mapGetters } from "vuex";
 
+import configUser from "../../components/user/config_user.vue";
+import lookup from "../../components/user/lookup.vue";
+
 export default {
+  components: {
+    configUser,
+    lookup,
+  },
+
   data() {
     return {
+      popup_config: {
+        estado: false,
+      },
+
+      popup_lookup: {
+        estado: false,
+        params: {},
+      },
+
       menu_data: [
         {
           id: "user",
           text: "Usuario",
           footer: "Falta configurar datos del usuario",
+          popup: "popup_config",
         },
 
         {
@@ -81,23 +112,69 @@ export default {
           text: "Configuracion",
           footer: "Falta sincronizar dispositivo",
         },
-        { id: "products", text: "Productos", footer: null },
-        { id: "customers", text: "Clientes", footer: null },
+        {
+          id: "products",
+          text: "Productos",
+          footer: null,
+
+          // data popup
+          popup: "popup_lookup",
+          getter: "products/get_list",
+          columns: {
+            value: ["codigo_list", "codigopr_list"],
+            text: "descripcionpr_list",
+          },
+        },
+        {
+          id: "presentations",
+          text: "Presentaciones",
+          footer: null,
+
+          // data popup
+          popup: "popup_lookup",
+          getter: "presentations/get_list",
+          columns: {
+            value: ["codigo_rep"],
+            text: "descripcion_rep",
+          },
+        },
+        {
+          id: "customers",
+          text: "Clientes",
+          footer: null,
+          // data popup
+          popup: "popup_lookup",
+          getter: "customers/get_list",
+          columns: {
+            value: ["identificacion_rut"],
+            text: "descripcion_rut",
+          },
+        },
       ],
     };
   },
 
   computed: {
     ...mapGetters({
+      config_user: "user/get_data_config",
       setting: "setting/get_data",
       products: "products/get_list",
+      presentations: "presentations/get_list",
       customers: "customers/get_list",
     }),
   },
 
   watch: {
+    config_user: function (val) {
+      let info = { ...val };
+
+      if (info.prefijo) {
+        let data = `Prefijo ${info.prefijo} - Numero ${info.numero}`;
+        this.text_footer("user", data);
+      }
+    },
     setting: function (val) {
-      let info = { ...val[0] };
+      let info = { ...val };
 
       if (info.descrip_empr) {
         let data = `${format_num(info.id_empr)} - ${info.descrip_empr}`;
@@ -107,6 +184,9 @@ export default {
     products: function (val) {
       this.text_footer("products", `${val.length} Registros`);
     },
+    presentations: function (val) {
+      this.text_footer("presentations", `${val.length} Registros`);
+    },
     customers: function (val) {
       this.text_footer("customers", `${val.length} Registros`);
     },
@@ -115,12 +195,31 @@ export default {
   async created() {
     let dispatch = this.$store.dispatch;
 
-    await dispatch("setting/load_data");
-    await dispatch("products/load_list");
-    await dispatch("customers/load_list");
+    await dispatch("user/query_data_config");
+    await dispatch("setting/query_data");
+    await dispatch("products/query_list");
+    await dispatch("presentations/query_list");
+    await dispatch("customers/query_list");
   },
 
   methods: {
+    validate_popup(item) {
+      if (item.popup) {
+        //
+        this[item.popup].estado = true;
+
+        this[item.popup].params = {
+          text: item.text,
+          vuex: {
+            getter: item.getter,
+          },
+          columns: item.columns,
+        };
+
+        //
+      } else toast("No se puede ver informacion");
+    },
+
     async download_data() {
       try {
         let loader_src = loader(true);
@@ -130,6 +229,9 @@ export default {
 
         loader_src.setTitle(`Descargando productos...`);
         await store.dispatch("products/download");
+
+        loader_src.setTitle(`Descargando presentaciones...`);
+        await store.dispatch("presentations/download");
 
         loader_src.setTitle(`Descargando clientes...`);
         await store.dispatch("customers/download");
@@ -141,14 +243,14 @@ export default {
         toast(
           "Ha ocurrido un error procesando la información. <br> Verifica la configuración e intenta más tarde."
         );
-        console.error("Error", err);
+        console.error("Error", error);
       }
     },
 
     text_footer(id, text) {
       let index = this.menu_data.findIndex((e) => e.id == id);
 
-      if (index > 0) {
+      if (index >= 0) {
         this.menu_data[index].footer = text;
       }
     },

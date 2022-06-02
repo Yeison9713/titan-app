@@ -219,12 +219,12 @@ export default {
 </script>
 
 <style lang="sass">
-.page-current
+[data-name=ingreso].page-current
   display: flex
   justify-content: center
 
-.page-content
-  width: 90%
+  .page-content
+    width: 90%
 
 #logo
   display: flex

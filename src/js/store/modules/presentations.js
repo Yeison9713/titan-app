@@ -1,7 +1,7 @@
 import { request_titan } from '../../utils/request_titan'
 import { idb } from '../../utils/idb'
 
-const table = 'products'
+const table = 'presentations'
 
 export default {
     namespaced: true,
@@ -10,7 +10,7 @@ export default {
     },
     getters: {
         get_list: (state) => {
-            return state.list.filter(e => e.codigo_list != "")
+            return state.list.filter(e => e.codigo_rep != "")
         }
     },
     mutations: {
@@ -38,9 +38,9 @@ export default {
 
                 let data = {
                     data: {
-                        importarhtml: info.token + "1|0000|",
+                        importarhtml: info.token + "1|",
                     },
-                    url: state.rootGetters['setting/get_url']('products'),
+                    url: state.rootGetters['setting/get_url']('presentations'),
                 }
 
                 request_titan({ url: ip_service, data })

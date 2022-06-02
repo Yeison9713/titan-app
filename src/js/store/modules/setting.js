@@ -14,7 +14,7 @@ export default {
             login: "financiero/dlls/login.dll",
             company: "financiero/dlls/CfEmpresaJ.dll",
             customers: "financiero/dlls/cfrutsJ.dll",
-            presentation: "ptoVta/dlls/CfunidadprJ.dll",
+            presentations: "ptoVta/dlls/CfunidadprJ.dll",
             products: "financiero/dlls/CfcarglistasJ.dll",
         },
         data: {}
@@ -32,12 +32,12 @@ export default {
 
     mutations: {
         set_data(state, data) {
-            state.data = data
+            state.data = { ...data[0] }
         }
     },
 
     actions: {
-        load_data(state) {
+        query_data(state) {
             return new Promise(async (resolve, reject) => {
                 try {
                     let data = await idb.get(table)
@@ -63,9 +63,15 @@ export default {
                 request_titan({ url: state.state.ip_service, data })
                     .then(async (res) => {
 
-                        await idb.set_db({ table, data: res.message })
-                        state.commit('set_data', res.message)
-                        resolve()
+                        try {
+
+                            await idb.set_db({ table, data: res.message })
+                            state.commit('set_data', res.message)
+                            resolve()
+
+                        } catch (error) {
+                            reject(error)
+                        }
 
                     }).catch(reject)
             })

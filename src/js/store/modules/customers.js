@@ -9,7 +9,9 @@ export default {
         list: []
     },
     getters: {
-        get_list: (state) => state.list
+        get_list: (state) => {
+            return state.list.filter(e => e.identificacion_rut != "")
+        }
     },
     mutations: {
         set_data(state, data) {
@@ -17,7 +19,7 @@ export default {
         },
     },
     actions: {
-        load_list(state) {
+        query_list(state) {
             return new Promise(async (resolve, reject) => {
                 try {
                     let data = await idb.get(table)
@@ -43,9 +45,16 @@ export default {
 
                 request_titan({ url: ip_service, data })
                     .then(async (res) => {
-                        await idb.set_db({ table, data: res.message })
-                        state.commit('set_data', res.message)
-                        resolve()
+
+                        try {
+
+                            await idb.set_db({ table, data: res.message })
+                            state.commit('set_data', res.message)
+                            resolve()
+
+                        } catch (error) {
+                            reject(error)
+                        }
 
                     }).catch(reject)
             })
