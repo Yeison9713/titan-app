@@ -29,7 +29,7 @@
         </f7-list>
 
         <f7-list
-          id="lookup-list"
+          :id="listId"
           class="search-list searchbar-found"
           virtual-list
           :virtual-list-params="{
@@ -73,40 +73,56 @@ export default {
   data() {
     return {
       lookup: [],
-      vlData: [],
+      vlData: {
+        items: [],
+      },
     };
+  },
+  computed: {
+    listId() {
+      return "lookup-list-" + this.params?.text;
+    },
   },
   methods: {
     titulo_navbar(text = "") {
       return text.toLocaleLowerCase() || "";
     },
     select_item(item) {
-      this.$emit("callback", item);
+      let getter = this.$store.getters;
+      let { vuex } = this.params;
+      let data = getter[vuex.getter] || [];
+      let itemReturn = data[item.index] || {}
+      this.$emit("callback", itemReturn);
     },
 
     async open() {
       let getter = this.$store.getters;
       let { vuex, columns, text } = this.params;
 
-      let data = getter[vuex.getter] || [];
+      let data = (await getter[vuex.getter]) || [];
 
-      for await (const item of data) {
-        let texto = item[columns.text] || "";
-        if (text == "Productos") texto = atob(texto);
+      await Promise.all(
+        data.map(async (item, index) => {
+          let texto = item[columns.text] || "";
+          if (text == "Productos") texto = atob(texto);
 
-        let value = "";
-        columns.value.forEach((e) => (value += String(item[e])));
+          let value = "";
+          for (const e of columns.value) {
+            value += String(item[e]);
+          }
 
-        this.lookup.push({ text: texto, value });
-      }
+          this.lookup.push({ text: texto, value, index });
+          return item;
+        })
+      );
 
-      this.replaceData();
+      this.replaceData(this.lookup);
     },
 
     closed() {
       this.lookup = [];
 
-      this.replaceData();
+      this.replaceData([]);
       this.$emit("closed", false);
     },
 
@@ -129,13 +145,13 @@ export default {
       return found;
     },
 
-    replaceData() {
+    replaceData(data = []) {
       let virtualList = f7.virtualList.get(
-        document.getElementById("lookup-list")
+        document.getElementById(this.listId)
       );
 
       if (virtualList) {
-        virtualList.replaceAllItems(this.lookup);
+        virtualList.replaceAllItems(data);
       }
     },
 

@@ -19,12 +19,12 @@ export default {
                             {
                                 id: 111,
                                 name: "Remision para facturar",
-                                link: "/usuario/remisiones/",
+                                link: "/remisiones/facturar/",
                             },
                             {
                                 id: 112,
                                 name: "Reimpresion de remisiones",
-                                link: "/usuario/remisiones/reimprimir",
+                                link: "/remisiones/imprimir/",
                             },
                         ],
                     },

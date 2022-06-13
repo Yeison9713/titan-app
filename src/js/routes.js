@@ -6,6 +6,9 @@ import Ingreso from '../pages/ingreso.vue';
 import User from "../pages/user/index.vue"
 import SyncApp from "../pages/user/syncApp.vue"
 
+import Remisiones from "../pages/remisiones/remisiones.vue"
+import RemisionesImpresion from "../pages/remisiones/impresiones.vue"
+
 
 var routes = [
   {
@@ -16,6 +19,8 @@ var routes = [
   securedRoute('/ingreso/', Ingreso),
   securedRoute('/usuario/', User),
   securedRoute('/usuario/synapp/', SyncApp),
+  securedRoute('/remisiones/facturar/', Remisiones),
+  securedRoute('/remisiones/imprimir/', RemisionesImpresion),
 
   {
     path: '(.*)',

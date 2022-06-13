@@ -11,6 +11,16 @@ export default {
     getters: {
         get_list: (state) => {
             return state.list.filter(e => e.codigo_list != "")
+        },
+        presentations: () => {
+            return [
+                { value: '001', label: 'Unidad' },
+                { value: '002', label: 'Cubeta' },
+                { value: '003', label: 'Media cubeta' },
+                { value: '004', label: 'Caja' },
+                { value: '005', label: 'Arrume' },
+                { value: '006', label: 'Cubeta codorniz' },
+            ]
         }
     },
     mutations: {
