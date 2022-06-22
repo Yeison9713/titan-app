@@ -150,6 +150,18 @@ export default {
             text: "descripcion_rut",
           },
         },
+        {
+          id: "cities",
+          text: "Ciudades",
+          footer: null,
+          // data popup
+          popup: "popup_lookup",
+          getter: "cities/get_list",
+          columns: {
+            value: ["c_digo_dane_del_municipio"],
+            text: "municipio",
+          },
+        },
       ],
     };
   },
@@ -161,6 +173,7 @@ export default {
       products: "products/get_list",
       presentations: "presentations/get_list",
       customers: "customers/get_list",
+      cities: "cities/get_list",
     }),
   },
 
@@ -190,6 +203,9 @@ export default {
     customers: function (val) {
       this.text_footer("customers", `${val.length} Registros`);
     },
+    cities: function (val) {
+      this.text_footer("cities", `${val.length} Registros`);
+    },
   },
 
   async created() {
@@ -200,6 +216,7 @@ export default {
     await dispatch("products/query_list");
     await dispatch("presentations/query_list");
     await dispatch("customers/query_list");
+    await dispatch("cities/query_list");
   },
 
   methods: {
@@ -236,14 +253,17 @@ export default {
         loader_src.setTitle(`Descargando clientes...`);
         await store.dispatch("customers/download");
 
+        loader_src.setTitle(`Descargando ciudades...`);
+        await store.dispatch("cities/download");
+
         loader(false);
         toast("Proceso terminado correctamente");
-      } catch (error) {
+      } catch (err) {
         loader(false);
         toast(
           "Ha ocurrido un error procesando la información. <br> Verifica la configuración e intenta más tarde."
         );
-        console.error("Error", error);
+        console.error("Error", err);
       }
     },
 

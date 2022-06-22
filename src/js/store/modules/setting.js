@@ -16,6 +16,7 @@ export default {
             customers: "financiero/dlls/cfrutsJ.dll",
             presentations: "ptoVta/dlls/CfunidadprJ.dll",
             products: "financiero/dlls/CfcarglistasJ.dll",
+            cities: "Datos/BASE/CIUDADES_DIAN.json",
         },
         data: {}
     },

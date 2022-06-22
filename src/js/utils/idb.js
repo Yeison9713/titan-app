@@ -37,7 +37,8 @@ const idb = {
             setting: '++id',
             products: '&[codigo_list+codigopr_list]',
             presentations: '&codigo_rep',
-            customers: '&[identificacion_rut]',
+            customers: '&identificacion_rut',
+            cities: '&codigo',
         })
 
         return db

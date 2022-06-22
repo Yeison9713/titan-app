@@ -23,12 +23,12 @@ const request_titan = ({ url, data = {}, method = 'POST', header = {} }) => {
 
         let formData = new FormData();
         for (var i in data) {
-            if(i == 'url') { formData.append(i, data[i]) }
-            else if(i == 'data') { formData.append(i, data[i].importarhtml) }
+            if (i == 'url') { formData.append(i, data[i]) }
+            else if (i == 'data') { formData.append(i, data[i].importarhtml) }
             else { formData.append(i, JSON.stringify(data[i])) }
         }
-        
-        formData.append('method', '')
+
+        formData.append('method', data.method || '')
 
         fetch(url, { body: formData, method })
             .then(e => e.text())
@@ -36,7 +36,7 @@ const request_titan = ({ url, data = {}, method = 'POST', header = {} }) => {
                 try {
                     let response = default_msj(JSON.parse(clear_text(res)));
 
-                    if (response.status != 0) reject(response);
+                    if (response.status != 0 && data.method != 'GET') reject(response);
                     else resolve(response)
 
 
