@@ -6,7 +6,19 @@ export default {
     namespaced: true,
 
     state: {
-        data_config: {},
+        data_config: {
+            prefijo: null,
+            numero: null,
+            ubicacion: {
+                codigo: null,
+                nombre: null,
+            },
+            agencia: {
+                codigo: null,
+                nombre: null,
+                consecutivo: null,
+            },
+        },
         menu: [
             {
                 id: 1,
@@ -59,6 +71,7 @@ export default {
                             {
                                 id: 211,
                                 name: "Ruts",
+                                link: '/ruts/config/'
                             },
                         ],
                     },
@@ -89,7 +102,8 @@ export default {
 
     mutations: {
         set_data(state, data) {
-            state.data_config = { ...data[0] }
+            let info = { ...data[0] }
+            state.data_config = info.prefijo ? info : state.data_config
         }
     },
 
