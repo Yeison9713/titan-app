@@ -1,5 +1,5 @@
 import { idb } from '../../utils/idb'
-
+import _ from 'lodash'
 const table = 'user'
 
 export default {
@@ -62,21 +62,48 @@ export default {
             },
             {
                 id: 2,
-                name: "Configuración",
+                name: 'Reportes',
                 submenu: [
                     {
                         id: 21,
-                        name: "Punto de venta",
+                        name: "Inventarios",
                         submenu: [
                             {
                                 id: 211,
+                                name: 'Saldo inventarios',
+                                link: 'reporte/inventarios'
+                            },
+                            {
+                                id: 212,
+                                name: 'P.Planta y equipos',
+                                link: 'reporte/p_p_equipos'
+                            },
+                        ]
+                    },
+                    {
+                        id: 22,
+                        name: "Cartera",
+                        link: '/reporte/cartera/'
+                    }
+                ]
+            },
+            {
+                id: 3,
+                name: "Configuración",
+                submenu: [
+                    {
+                        id: 31,
+                        name: "Punto de venta",
+                        submenu: [
+                            {
+                                id: 311,
                                 name: "Ruts",
                                 link: '/ruts/config/'
                             },
                         ],
                     },
                     {
-                        id: 22,
+                        id: 32,
                         name: "Actualizar app",
                         link: '/usuario/synapp/'
                     }
@@ -164,7 +191,30 @@ export default {
                 }
 
             })
-        }
+        },
 
+        save_consecutivo(state) {
+            return new Promise(async (resolve, reject) => {
+                try {
+
+                    let data = _.cloneDeep(state.state.data_config)
+                    let consecutivo = parseFloat(data.agencia.consecutivo)
+                    data.agencia.consecutivo = String(++consecutivo)
+
+                    // get index data in db
+                    let index = await idb.getIndex({ table, index: data.id })
+                    if (!index) return reject({ error: 'Falta configurar' })
+
+                    // update consecutivo
+                    await idb.update({ table, index, data })
+                    resolve()
+
+                } catch (error) {
+                    console.log(error)
+                    reject(error)
+                }
+
+            })
+        }
     }
 }

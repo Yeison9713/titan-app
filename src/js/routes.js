@@ -4,11 +4,14 @@ import NotFoundPage from '../pages/404.vue';
 import Ingreso from '../pages/ingreso.vue';
 
 import User from "../pages/user/index.vue"
-import SyncApp from "../pages/user/syncApp.vue"
-import ConfigRuts from "../pages/ruts/config.vue"
 
 import Remisiones from "../pages/remisiones/remisiones.vue"
 import RemisionesImpresion from "../pages/remisiones/impresiones.vue"
+
+import ReporteCartera from "../pages/reportes/cartera.vue"
+
+import ConfigRuts from "../pages/ruts/config.vue"
+import SyncApp from "../pages/user/syncApp.vue"
 
 
 var routes = [
@@ -23,6 +26,7 @@ var routes = [
   securedRoute('/remisiones/facturar/', Remisiones),
   securedRoute('/remisiones/imprimir/', RemisionesImpresion),
 
+  securedRoute('/reporte/cartera/', ReporteCartera),
   securedRoute('/ruts/config/', ConfigRuts),
 
   {
