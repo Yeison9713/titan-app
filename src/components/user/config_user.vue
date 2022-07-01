@@ -113,8 +113,6 @@
               </f7-col>
             </f7-row>
           </f7-block>
-
-          <f7-list-item class=""> </f7-list-item>
         </f7-list>
       </f7-card>
     </f7-page>
@@ -196,6 +194,7 @@ export default {
 
           loader(false);
           toast("Proceso terminado correctamente");
+          this.close()
         } catch (error) {
           loader(false);
           toast("Ocurrio un error guardando la informacion ");

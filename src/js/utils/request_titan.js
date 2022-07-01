@@ -6,7 +6,7 @@ const clear_text = (data) => {
     let encode = encodeURI(data);
     encode = encode.replace(/%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20/g, "");
     encode = encode.replace(/%0A/g, "");
-    return decodeURI(encode).replace(/\s\s+/g, '');
+    return decodeURI(encode).replace(/\s\s+/g, ' ');
 }
 
 const default_msj = (data = {}) => {
