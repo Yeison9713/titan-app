@@ -35,6 +35,7 @@
     "imask": "^6.4.2",
     "lodash": "^4.17.21",
     "material-icons": "^1.10.11",
+    "pdfmake": "^0.2.5",
     "skeleton-elements": "^4.0.0",
     "swiper": "^8.1.4",
     "vue": "^3.2.33",
