@@ -1,65 +1,14 @@
 <template>
   <f7-page>
-    <f7-navbar
-      title="Remisión de Mercancías para Facturar"
-      back-link="Back"
-    ></f7-navbar>
+    <f7-navbar title="Reimpresion de remisiones" back-link="Back"></f7-navbar>
     <f7-card
       :style="{
         padding: '10px',
       }"
     >
-      <f7-list form class="form_factura">
-        <f7-list-input
-                label="punto de remision"
-                type="select"
-                floating-label
-                outline
-              >
-                <option value="0">efectivo</option>
-                <option value="1">tarjeta debito</option>
-                <option value="2">tarjeta de credito</option>
-                <option value="3">transferencia</option>
-                <option value="4">anticipado</option>
-                <option value="5">bono</option>
-              </f7-list-input>
-        <f7-list-item-row no-gap>
-          <f7-row
-            no-gap
-            :style="{ width: '100%' }"
-            class="display-flex justify-content-end"
-          >
-            <f7-col width="60">
-              <f7-list-input label="Fecha" type="date" outline floating-label />
-            </f7-col>
-          </f7-row>
-        </f7-list-item-row>
-        <f7-list-item-row>
-          <f7-row no-gap :style="{ width: '100%' }">
-            <f7-col width="80">
-              <f7-list-input
-                label="Cliente"
-                type="text"
-                outline
-                floating-label
-                :value="cliente"
-              />
-            </f7-col>
-            <f7-col
-              width="20"
-              :style="{ height: '100%' }"
-              class="display-flex align-items-center padding-right"
-              @click="
-                cliente = 'Felipe';
-                traer_productos();
-              "
-            >
-              <f7-button fill color="green" :style="{ width: '100%' }">
-                <f7-icon f7="search" size="22"></f7-icon>
-              </f7-button>
-            </f7-col>
-          </f7-row>
-        </f7-list-item-row>
+      <f7-list form class="reimpresion_remision">
+        <f7-list-item title="Listado de remisiones" group-title />
+
         <f7-list-item>
           <div class="list accordion-opposite width-100">
             <ul class="no-padding-left">
@@ -74,29 +23,32 @@
                       no-gap
                       class="width-100 display-flex align-items-center"
                     >
-                      <f7-col width="70">
+                      <f7-col width="80">
                         <div
                           class="item-title"
                           :style="{ 'font-size': '12px' }"
                         >
-                          <b>{{ item.nombre }}</b>
+                          <b>{{ item.cliente?.descripcion_rut }}</b>
                         </div>
                       </f7-col>
                       <f7-col
-                        width="30"
+                        width="20"
                         class="text-align-right"
                         :style="{ 'font-size': '12px' }"
                       >
-                        $ {{ item.valor }}
+                        Fact. {{ format_num(item.consecutivo) }}
                       </f7-col>
                     </f7-row>
                   </div>
+
                   <div class="swipeout-actions-right">
                     <f7-link
-                      icon-f7="multiply"
+                      icon-f7="printer"
                       icon-color="white"
                       icon-size="24"
                       class="swipeout-red"
+                      color="gray"
+                      @click="print_pdf(item)"
                     ></f7-link>
                   </div>
                 </a>
@@ -104,12 +56,23 @@
                   <div class="block">
                     <f7-row>
                       <f7-col width="100">
-                        <b>Cantidad:</b>
-                        {{ item.cantidad }}
+                        <b>Fecha:</b>
+                        {{ item.fecha }}
                       </f7-col>
+
                       <f7-col width="100">
-                        <b>Ubicación:</b>
-                        PRODUCTOS RUTA 1
+                        <b>Forma de pago:</b>
+                        {{ textValue("formaPago", item.formaPago) }}
+                      </f7-col>
+
+                      <f7-col width="100">
+                        <b>Medio de pago:</b>
+                        {{ textValue("medioPago", item.medioPago) }}
+                      </f7-col>
+
+                      <f7-col width="100">
+                        <b>Observaciones:</b>
+                        {{ item.observaciones }}
                       </f7-col>
                     </f7-row>
                   </div>
@@ -118,60 +81,59 @@
             </ul>
           </div>
         </f7-list-item>
-        <f7-list-item title="Cierre de remisión" group-title />
-        <!-- cajitas.............................................. -->
-        <f7-list-item-row>
-          <f7-row no-gap :style="{ width: '100%' }">
-            <f7-col width="50">
-              <f7-list-input
-                label="forma de pago"
-                type="select"
-                floating-label
-                outline
-              >
-                <option value="0">contado</option>
-                <option value="1">credito</option>
-                <option value="2">anticipado</option>
-              </f7-list-input>
-            </f7-col>
-            <f7-col width="50">
-              <f7-list-input
-                label="Medio de pago"
-                type="select"
-                floating-label
-                outline
-              >
-                <option value="0">efectivo</option>
-                <option value="1">tarjeta debito</option>
-                <option value="2">tarjeta de credito</option>
-                <option value="3">transferencia</option>
-                <option value="4">anticipado</option>
-                <option value="5">bono</option>
-              </f7-list-input>
-            </f7-col>
-          </f7-row>
-        </f7-list-item-row>
-        <f7-list-input
-          label="observaciones"
-          type="textarea"
-          floating-label
-          outline
-        />
-
-        <f7-block strong>
-          <f7-row>
-            <f7-col>
-              <f7-button fill color="green">subir </f7-button>
-            </f7-col>
-            <f7-col>
-              <f7-button fill color="gray">imprimir </f7-button>
-            </f7-col>
-            <f7-col>
-              <f7-button fill color="orange">compartir </f7-button>
-            </f7-col>
-          </f7-row>
-        </f7-block>
       </f7-list>
     </f7-card>
   </f7-page>
 </template>
+
+<script>
+import { format_num } from "../../js/utils/plugins";
+import { formaPago, medioPago, textValue } from "../../js/utils/global";
+
+import { imprimir } from "../../js/utils/print";
+import { mapGetters } from "vuex";
+import _ from "lodash";
+
+export default {
+  data() {
+    return {
+      formaPago,
+      medioPago,
+    };
+  },
+  async created() {
+    let dispatch = this.$store.dispatch;
+
+    await dispatch("remisiones/query_list");
+    await dispatch("setting/query_data");
+  },
+  computed: {
+    ...mapGetters({
+      detalle: "remisiones/get_list",
+      info_user: "user/get_info",
+    }),
+  },
+  methods: {
+    format_num,
+    textValue,
+    print_pdf(item) {
+      let datos = {
+        ...item,
+        descrip_forma_pago: this.textValue("formaPago", item.formaPago),
+      };
+
+      try {
+        imprimir({ data: _.cloneDeep(datos), formato: "remision_pos" })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+};
+</script>

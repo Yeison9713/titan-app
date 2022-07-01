@@ -12,24 +12,24 @@
       <f7-list form class="form_factura">
         <f7-list-item-row>
           <f7-row no-gap>
-            <f7-col width="60">
+            <f7-col width="65">
               <f7-list-input
                 label="Punto de entrega"
-                type="select"
+                type="text"
                 floating-label
                 outline
-                v-model:value="form.agencia"
+                :disabled="true"
+                v-model:value="form.descrip_agencia"
               >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
               </f7-list-input>
             </f7-col>
-            <f7-col width="40">
+            <f7-col width="35">
               <f7-list-input
                 label="Consecutivo"
                 type="text"
                 outline
                 floating-label
+                :disabled="true"
                 v-model:value="form.consecutivo"
               />
             </f7-col>
@@ -94,6 +94,7 @@
             Agregar producto/servicio
           </f7-button>
         </f7-list-item-row>
+
         <f7-list-item>
           <div class="list accordion-opposite width-100">
             <ul class="no-padding-left">
@@ -125,12 +126,23 @@
                       </f7-col>
                     </f7-row>
                   </div>
+
                   <div class="swipeout-actions-right">
+                    <f7-link
+                      icon-f7="pencil"
+                      icon-color="white"
+                      icon-size="24"
+                      class="swipeout-red"
+                      color="green"
+                      @click="change_item(index, item)"
+                    ></f7-link>
                     <f7-link
                       icon-f7="multiply"
                       icon-color="white"
                       icon-size="24"
                       class="swipeout-red"
+                      color="red"
+                      @click="delete_item(index)"
                     ></f7-link>
                   </div>
                 </a>
@@ -141,19 +153,54 @@
                         <b>Cantidad:</b>
                         {{ format_num(item.cantidad) }}
                       </f7-col>
+
                       <f7-col width="100">
-                        <b>Ubicación:</b>
-                        PRODUCTOS RUTA 1
+                        <b>V. Unitario:</b>
+                        {{ item.producto?.baseproducto_list }}
+                      </f7-col>
+
+                      <f7-col width="100">
+                        <b>Presentacion:</b>
+                        {{ item.presentacion }}
                       </f7-col>
                     </f7-row>
                   </div>
                 </div>
               </li>
+
+              <li v-if="form.total_rem > 0">
+                <a class="item-content" href="#">
+                  <div class="item-inner">
+                    <f7-row
+                      no-gap
+                      class="width-100 display-flex align-items-center"
+                    >
+                      <f7-col width="70">
+                        <div
+                          class="item-title"
+                          :style="{ 'font-size': '12px' }"
+                        >
+                          <b>Total: </b>
+                        </div>
+                      </f7-col>
+                      <f7-col
+                        width="30"
+                        class="text-align-right"
+                        :style="{ 'font-size': '12px' }"
+                      >
+                        $ {{ format_num(form.total_rem) }}
+                      </f7-col>
+                    </f7-row>
+                  </div>
+                </a>
+              </li>
             </ul>
           </div>
         </f7-list-item>
         <f7-list-item title="Cierre de remisión" group-title />
+
         <!-- cajitas.............................................. -->
+
         <f7-list-item-row>
           <f7-row no-gap :style="{ width: '100%' }">
             <f7-col width="50">
@@ -164,12 +211,16 @@
                 outline
                 v-model:value="form.formaPago"
               >
-                <option value="0">Contado</option>
-                <option value="1">Credito</option>
-                <option value="2">Anticipado</option>
+                <option
+                  v-for="item in formaPago"
+                  :key="item"
+                  :value="item.value"
+                >
+                  {{ item.text }}
+                </option>
               </f7-list-input>
             </f7-col>
-            <f7-col width="50">
+            <f7-col width="50" v-if="form.formaPago != '2'">
               <f7-list-input
                 label="Medio de pago"
                 type="select"
@@ -177,13 +228,24 @@
                 outline
                 v-model:value="form.medioPago"
               >
-                <option value="0">Efectivo</option>
-                <option value="1">Tarjeta debito</option>
-                <option value="2">Tarjeta de credito</option>
-                <option value="3">Transferencia</option>
-                <option value="4">Anticipado</option>
-                <option value="5">Bono</option>
+                <option
+                  v-for="item in medioPago"
+                  :key="item"
+                  :value="item.value"
+                >
+                  {{ item.text }}
+                </option>
               </f7-list-input>
+            </f7-col>
+
+            <f7-col width="50" v-if="form.formaPago == '2'">
+              <f7-list-input
+                label="Días plazo"
+                type="text"
+                floating-label
+                outline
+                v-model:value="form.diasPlazo"
+              ></f7-list-input>
             </f7-col>
           </f7-row>
         </f7-list-item-row>
@@ -198,13 +260,14 @@
         <f7-block strong>
           <f7-row>
             <f7-col>
-              <f7-button fill color="green">subir </f7-button>
+              <f7-button fill color="green" @click="grabar()"
+                >Grabar
+              </f7-button>
             </f7-col>
             <f7-col>
-              <f7-button fill color="gray">imprimir </f7-button>
-            </f7-col>
-            <f7-col>
-              <f7-button fill color="orange">compartir </f7-button>
+              <f7-button fill color="gray" @click="grabar(true)"
+                >Imprimir
+              </f7-button>
             </f7-col>
           </f7-row>
         </f7-block>
@@ -218,13 +281,30 @@
       @closed="searchState = false"
     />
 
-    <addItem :state="modalAddItem.state" @closed="modalAddItem.state = false" @callback="addItemDetail"/>
+    <addItem
+      :state="modalAddItem.state"
+      :change="modalAddItem.change"
+      @closed="(modalAddItem.state = false), (modalAddItem.change = {})"
+      @callback="addItemDetail"
+    />
   </f7-page>
 </template>
 <script>
 import lookup from "../../components/user/lookup.vue";
 import addItem from "./addItem.vue";
-import { format_num } from "../../js/utils/plugins";
+
+import { format_num, loader, toast } from "../../js/utils/plugins";
+import {
+  formaPago,
+  medioPago,
+  textValue,
+  current_date,
+} from "../../js/utils/global";
+
+import { mapGetters, mapActions } from "vuex";
+import _ from "lodash";
+
+import { imprimir } from "../../js/utils/print";
 
 export default {
   components: {
@@ -233,36 +313,97 @@ export default {
   },
   data() {
     return {
-      form: {
-        cliente: null,
-        consecutivo: null,
-        agencia: null,
-        fecha: null,
-        formaPago: null,
-        medioPago: null,
-        observaciones: null,
-      },
+      formaPago,
+      medioPago,
+      form: {},
       detalle: [],
       searchState: false,
       searchParams: {},
       modalAddItem: {
         state: false,
+        change: {},
       },
     };
   },
-  async created() {
-    await this.$store.dispatch("customers/query_list");
-    await this.$store.dispatch("products/query_list");
+
+  created() {
+    this.init_form();
+  },
+
+  computed: {
+    ...mapGetters({
+      config_user: "user/get_data_config",
+      info_user: "user/get_info",
+      products: "products/get_list",
+      presentations: "presentations/get_list",
+      customers: "customers/get_list",
+    }),
+  },
+
+  watch: {
+    config_user: function (val) {
+      this.form.agencia = val?.agencia?.codigo;
+      this.form.descrip_agencia = `${val?.agencia?.codigo} - ${val?.agencia?.nombre}`;
+      this.form.consecutivo = val.agencia.consecutivo;
+    },
   },
   methods: {
+    textValue,
     format_num,
-    addItemDetail(item){
-      console.log('item', item)
-      this.detalle.push(item)
-      this.modalAddItem.state = false
+    ...mapActions({
+      save_remision: "remisiones/save",
+      add_consecutivo: "user/save_consecutivo",
+    }),
+
+    async init_form() {
+      this.detalle = [];
+      this.form = {
+        cliente: null,
+        consecutivo: null,
+        agencia: null,
+        descrip_agencia: null,
+        fecha: current_date().split("/").reverse().join("-"),
+        formaPago: null,
+        diasPlazo: null,
+        medioPago: null,
+        observaciones: null,
+        total_rem: 0,
+      };
+
+      let dispatch = this.$store.dispatch;
+
+      await dispatch("user/query_data_config");
+      await dispatch("setting/query_data");
+      await dispatch("products/query_list");
+      await dispatch("presentations/query_list");
+      await dispatch("customers/query_list");
+    },
+
+    addItemDetail(item, index) {
+      console.log(item, index);
+
+      if (index >= 0) this.detalle[index] = _.cloneDeep(item);
+      else this.detalle.push(item);
+
+      this.modalAddItem.state = false;
+      this.put_total();
+    },
+    put_total() {
+      this.form.total_rem = 0;
+
+      this.detalle.forEach((e) => {
+        this.form.total_rem += parseFloat(e.total);
+      });
     },
     openAddItem() {
       this.modalAddItem.state = true;
+    },
+    change_item(index, item) {
+      this.modalAddItem.change = _.cloneDeep({ index, ...item });
+      this.modalAddItem.state = true;
+    },
+    delete_item(index) {
+      this.detalle.splice(index, 1);
     },
     openClients() {
       this.searchParams = this.mapClient();
@@ -271,6 +412,65 @@ export default {
     selectClient(item) {
       this.form.cliente = item;
       this.searchState = false;
+    },
+
+    async grabar(print = false) {
+      try {
+        let { form, detalle } = this;
+
+        if (!form.cliente) toast("Debe selecionar un cliente");
+        else if (_.isEmpty(detalle)) toast("No se han agregado registros");
+        else if (!form.formaPago) toast("Selecione la forma de pago");
+        else if (form.formaPago != 2 && !form.medioPago)
+          toast("Selecione un medio de pago");
+        else {
+          let loader_src = loader(true);
+          loader_src.setTitle(`Guardando remisión...`);
+
+          // save remision
+          let datos = {
+            ...form,
+            detalle,
+            elaboro: {
+              fecha: new Date().getTime(),
+              operador: this.info_user.user,
+            },
+          };
+
+          await this.save_remision(_.cloneDeep(datos));
+          await this.add_consecutivo();
+          if (print) await this.imprimir_remisiones(datos);
+
+          this.init_form();
+          loader(false);
+          toast("Proceso terminado correctamente");
+        }
+      } catch (error) {
+        loader(false);
+        toast("Ha ocurrido guardando la remision");
+        console.error("Error", error);
+      }
+    },
+
+    imprimir_remisiones(data) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          let datos = {
+            ...data,
+            descrip_forma_pago: this.textValue("formaPago", data.formaPago),
+          };
+
+          imprimir({ data: _.cloneDeep(datos), formato: "remision_pos" })
+            .then(resolve)
+            .catch((error) => {
+              console.log(error);
+              reject();
+            });
+        } catch (error) {
+          console.log(error);
+          reject(error);
+        }
+      });
     },
 
     mapClient() {

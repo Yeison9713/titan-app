@@ -39,6 +39,7 @@ const idb = {
             presentations: '&codigo_rep',
             customers: '&identificacion_rut',
             cities: '&codigo',
+            remisiones: '&consecutivo'
         })
 
         return db

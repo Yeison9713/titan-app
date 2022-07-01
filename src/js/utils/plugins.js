@@ -58,6 +58,22 @@ let format_num = (val = 0, scale = 0) => {
     return `${mask.value}`
 }
 
+function getBase64(url) {
+    return new Promise((res) => {
+        var xhr = new XMLHttpRequest()
+        xhr.onload = function () {
+            var reader = new FileReader()
+            reader.onloadend = function () {
+                res(reader.result)
+            }
+            reader.readAsDataURL(xhr.response)
+        }
+        xhr.open('GET', url)
+        xhr.responseType = 'blob'
+        xhr.send()
+    })
+}
+
 let check_dv = (id) => {
     let numero = String(id);
     let isNitValid = numero >>> 0 === parseFloat(numero) ? true : false;
@@ -109,4 +125,4 @@ let check_dv = (id) => {
 
 
 
-export { toast, loader, format_num, notification, progress, check_dv }
+export { toast, loader, format_num, notification, progress, check_dv, getBase64 }

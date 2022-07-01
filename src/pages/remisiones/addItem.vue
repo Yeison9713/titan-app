@@ -1,5 +1,5 @@
 <template>
-  <f7-popup v-model:opened="state" @popup:closed="closed">
+  <f7-popup v-model:opened="state" @popup:closed="closed" @popup:opened="open">
     <f7-view>
       <f7-page>
         <f7-navbar title="Agregar producto o servicio">
@@ -38,25 +38,18 @@
               </f7-row>
             </f7-list-item-row>
             <f7-list-input
-              label="Ubicación"
-              type="select"
-              floating-label
-              outline
-            >
-              <option value="Male">1</option>
-            </f7-list-input>
-            <f7-list-input
               label="Presentación"
               type="select"
               floating-label
               outline
+              v-model:value="form.presentacion"
             >
               <option
                 v-for="(item, index) in presentaciones"
-                :value="item.value"
+                :value="item.codigo_rep"
                 :key="index"
               >
-                {{ item.value }} - {{ item.label }}
+                {{ item.codigo_rep }} - {{ item.descripcion_rep }}
               </option>
             </f7-list-input>
             <f7-list-item-row>
@@ -72,7 +65,6 @@
                     outline
                     floating-label
                     v-model:value="form.cantidad"
-                    @keyup="calcularTotal"
                   >
                   </f7-list-input>
                 </f7-col>
@@ -137,21 +129,19 @@
 </template>
 <script>
 import lookup from "../../components/user/lookup.vue";
-import { format_num } from "../../js/utils/plugins";
+import { format_num, toast } from "../../js/utils/plugins";
+import _ from "lodash";
 export default {
   props: {
     state: Boolean,
+    change: Object,
   },
   components: {
     lookup,
   },
   data() {
     return {
-      form: {
-        producto: null,
-        valorUnitario: 0,
-        cantidad: 0,
-      },
+      form: {},
       modalItem: {
         state: false,
         params: {
@@ -169,12 +159,26 @@ export default {
   },
   computed: {
     presentaciones() {
-      return this.$store.getters["products/presentations"];
+      return this.$store.getters["presentations/get_list"];
+    },
+  },
+  watch: {
+    "form.cantidad": function () {
+      this.calcularTotal();
     },
   },
   methods: {
     format_num,
+    open() {
+      this.init_form();
+
+      if (this.change.producto) {
+        this.form = _.cloneDeep(this.change);
+      }
+    },
     closed() {
+      this.init_form();
+
       this.$emit("closed");
     },
     selectItem(item) {
@@ -188,6 +192,7 @@ export default {
 
         this.form.producto = item;
         this.form.valorUnitario = valorUnitario;
+        this.form.cantidad = 1;
 
         this.modalItem.state = false;
       }
@@ -200,8 +205,32 @@ export default {
       const total = unitario * valorCantidad;
       this.form.total = parseFloat(total.toFixed(0));
     },
+    init_form() {
+      this.form = {
+        producto: null,
+        presentacion: null,
+        descpres_rep: null,
+        valorUnitario: 0,
+        cantidad: 0,
+      };
+    },
     addItem() {
-      this.$emit("callback", this.form);
+      let data = this.form;
+
+      if (!data.producto) toast("Selecione un producto");
+      else if (!data.cantidad) toast("Ingrese la cantidad ");
+      else if (!data.presentacion)
+        toast("Selecione la presentacion del producto");
+      else {
+        let presentacion = this.presentaciones.find(
+          (e) => e.codigo_rep == this.form.presentacion
+        );
+
+        this.form.descpres_rep = presentacion.descripcion_rep;
+        let index = this.change.producto ? this.change.index : -1;
+
+        this.$emit("callback", this.form, index);
+      }
     },
   },
 };
