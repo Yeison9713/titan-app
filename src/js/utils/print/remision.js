@@ -21,7 +21,7 @@ var remision_pos = (data, logo) => {
 
         productos.push({
             stack: [
-                { text: descripcion64 + "_" + el.descpres_rep, fontSize: 7 },
+                { text: descripcion64 + "_" + el.descpres_rep, fontSize: 8 },
                 {
                     columns: [
                         {
@@ -31,19 +31,19 @@ var remision_pos = (data, logo) => {
                         {
                             text: el.cantidad,
                             width: "20%",
-                            alignment: "center",
+                            alignment: "right",
                         },
 
                         {
                             text: el.valorUnitario,
                             width: "20%",
-                            alignment: "center",
+                            alignment: "right",
                         },
                         {
                             text: format_num(el.total),
                             width: "30%",
                             alignment: "center",
-                            margin: [10, 0, 0, 0],
+                            margin: [15, 0, 0, 0],
                         },
                     ],
                 },
@@ -59,7 +59,7 @@ var remision_pos = (data, logo) => {
             width,
             height: "auto",
         },
-        pageMargins: [2, 2, 15, 10],
+        pageMargins: [10, 10, 10, 10],
         defaultStyle: {
             fontSize: 8,
         },
@@ -105,7 +105,7 @@ var remision_pos = (data, logo) => {
                         text: `REMISION Nro. ${data.consecutivo}`,
                         bold: true,
                         style: "headers",
-                        fontSize: 14,
+                        fontSize: 10,
                     },
                     {
                         // text: `Resolución DIAN ${data.nrores_dian.replace(/\s\s+/g, " ")}`,
@@ -114,21 +114,21 @@ var remision_pos = (data, logo) => {
                     },
                 ],
             },
-            {
-                canvas: [
-                    {
-                        type: "line",
-                        x1: 0,
-                        y1: 0,
-                        x2: width - 20,
-                        // x2: pageSize.width - 20,
-                        y2: 0,
-                        lineWidth: 0.5,
-                        dash: { length: 5, space: 2 },
-                    },
-                ],
-                margin: [0, 10, 0, 10],
-            },
+            // {
+            //     canvas: [
+            //         {
+            //             type: "line",
+            //             x1: 0,
+            //             y1: 0,
+            //             x2: width - 20,
+            //             // x2: pageSize.width - 20,
+            //             y2: 0,
+            //             lineWidth: 0.5,
+            //             dash: { length: 5, space: 2 },
+            //         },
+            //     ],
+            //     margin: [0, 10, 0, 10],
+            // },
             {
                 stack: [
                     {
@@ -156,20 +156,20 @@ var remision_pos = (data, logo) => {
                     },
                 ],
             },
-            {
-                canvas: [
-                    {
-                        type: "line",
-                        x1: 0,
-                        y1: 0,
-                        x2: width - 20,
-                        y2: 0,
-                        lineWidth: 0.5,
-                        dash: { length: 5, space: 2 },
-                    },
-                ],
-                margin: [0, 10, 0, 10],
-            },
+            // {
+            //     canvas: [
+            //         {
+            //             type: "line",
+            //             x1: 0,
+            //             y1: 0,
+            //             x2: width - 20,
+            //             y2: 0,
+            //             lineWidth: 0.5,
+            //             dash: { length: 5, space: 2 },
+            //         },
+            //     ],
+            //     margin: [0, 10, 0, 10],
+            // },
             {
                 columns: [
                     {
@@ -197,37 +197,37 @@ var remision_pos = (data, logo) => {
                         bold: true,
                     },
                 ],
-                margin: [0, 0, 0, 5],
+                margin: [0, 10, 0, 0],
             },
             productos,
-            {
-                canvas: [
-                    {
-                        type: "line",
-                        x1: 0,
-                        y1: 0,
-                        x2: width - 20,
-                        y2: 0,
-                        lineWidth: 0.5,
-                        dash: { length: 5, space: 2 },
-                    },
-                ],
-                margin: [0, 10, 0, 10],
-            },
+            // {
+            //     canvas: [
+            //         {
+            //             type: "line",
+            //             x1: 0,
+            //             y1: 0,
+            //             x2: width - 20,
+            //             y2: 0,
+            //             lineWidth: 0.5,
+            //             dash: { length: 5, space: 2 },
+            //         },
+            //     ],
+            //     margin: [0, 10, 0, 10],
+            // },
             {
                 columns: [
                     {
                         width: "60%",
                         text: "Total".toUpperCase(),
                         bold: true,
-                        fontSize: 12,
+                        fontSize: 9,
                     },
                     {
                         width: "40%",
                         text: `$ ${format_num(total)}`,
                         alignment: "center",
                         bold: true,
-                        fontSize: 12,
+                        fontSize: 9,
                     },
                 ],
             },
@@ -280,20 +280,20 @@ var remision_pos = (data, logo) => {
                     },
                 ],
             },
-            {
-                canvas: [
-                    {
-                        type: "line",
-                        x1: 0,
-                        y1: 0,
-                        x2: width - 20,
-                        y2: 0,
-                        lineWidth: 0.5,
-                        dash: { length: 5, space: 2 },
-                    },
-                ],
-                margin: [0, 5, 0, 10],
-            },
+            // {
+            //     canvas: [
+            //         {
+            //             type: "line",
+            //             x1: 0,
+            //             y1: 0,
+            //             x2: width - 20,
+            //             y2: 0,
+            //             lineWidth: 0.5,
+            //             dash: { length: 5, space: 2 },
+            //         },
+            //     ],
+            //     margin: [0, 5, 0, 10],
+            // },
             [
                 {
                     columns: [
@@ -312,20 +312,20 @@ var remision_pos = (data, logo) => {
                     ],
                 },
             ],
-            {
-                canvas: [
-                    {
-                        type: "line",
-                        x1: 0,
-                        y1: 0,
-                        x2: width - 20,
-                        y2: 0,
-                        lineWidth: 0.5,
-                        dash: { length: 5, space: 2 },
-                    },
-                ],
-                margin: [0, 5, 0, 10],
-            },
+            // {
+            //     canvas: [
+            //         {
+            //             type: "line",
+            //             x1: 0,
+            //             y1: 0,
+            //             x2: width - 20,
+            //             y2: 0,
+            //             lineWidth: 0.5,
+            //             dash: { length: 5, space: 2 },
+            //         },
+            //     ],
+            //     margin: [0, 5, 0, 10],
+            // },
             {
                 text: `Atendido por: ${data.elaboro?.operador?.full_name} \n\n\n\n\n`,
             },

@@ -102,6 +102,7 @@ export default {
     };
   },
   async created() {
+    // console.log(cordova ? "no exists" : "a");
     let dispatch = this.$store.dispatch;
 
     await dispatch("remisiones/query_list");
@@ -123,9 +124,24 @@ export default {
       };
 
       try {
-        imprimir({ data: _.cloneDeep(datos), formato: "remision_pos" })
-          .then((res) => {
-            console.log(res);
+        imprimir({
+          data: _.cloneDeep(datos),
+          formato: "remision_pos",
+          nit: 1014185545,
+        })
+          .then((base64) => {
+            window.plugins.PrintPDF.print({
+              data: base64,
+              type: "Data",
+              title: "test print",
+              success: function () {
+                console.log("success");
+              },
+              error: function (data) {
+                data = JSON.parse(Data);
+                console.log("failed" + data.error);
+              },
+            });
           })
           .catch((err) => {
             console.log(err);
