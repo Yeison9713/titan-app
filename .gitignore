@@ -14,6 +14,7 @@ pids
 
 # Dependency directories
 node_modules/
+android/
 
 # Optional npm cache directory
 .npm

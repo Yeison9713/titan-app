@@ -115,13 +115,12 @@ export default {
     getters: {
         get_menu: (state) => state.menu,
         get_info: (state) => {
-            let info = {}
-
             try {
-                info = JSON.parse(localStorage.info) || {}
-            } catch (error) { }
-
-            return info
+                let token = localStorage.token || sessionStorage.token
+                return JSON.parse(atob(token) || '{}')
+            } catch (error) {
+                return {}
+            }
         },
 
         get_data_config: (state) => state.data_config
@@ -135,7 +134,7 @@ export default {
     },
 
     actions: {
-        login(state, { data }) {
+        login(state, { data, remember_account }) {
             let datos = {
                 token: data.at(0),
                 code: data.at(4),
@@ -153,12 +152,16 @@ export default {
                 },
             }
 
-            localStorage.setItem("info", JSON.stringify(datos));
+            let encode = btoa(JSON.stringify(datos))
+            remember_account ? localStorage.token = encode : sessionStorage.token = encode
+
             setTimeout(() => { location.reload() }, 250);
         },
 
         logout() {
             localStorage.clear()
+            sessionStorage.clear()
+
             setTimeout(() => { location.reload() }, 250);
         },
 

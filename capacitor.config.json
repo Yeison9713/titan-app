@@ -1,6 +1,6 @@
 {
   "appId": "io.framework7.myapp",
-  "appName": "titan-app",
+  "appName": "Titan remisiones",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

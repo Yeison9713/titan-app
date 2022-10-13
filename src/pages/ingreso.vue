@@ -13,11 +13,21 @@
           :style="{ margin: '11px 0 5px 0' }"
         >
           <f7-list-item id="logo">
-            <img :src="logo" />
+            <div
+              :style="{
+                backgroundImage: `url(${logo})`,
+                backgroundSize: '90%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+              }"
+            ></div>
+          </f7-list-item>
+
+          <f7-list-item class="display-flex justify-content-center">
             <span
               :style="{ 'text-transform': 'uppercase', 'font-weight': '500' }"
             >
-              Titan app
+              Titan remisiones
             </span>
           </f7-list-item>
 
@@ -135,7 +145,6 @@
 <script>
 import { f7 } from "framework7-vue";
 import { request_titan } from "../js/utils/request_titan";
-import logo from "../assets/logo.png";
 import { mapGetters, mapActions } from "vuex";
 
 import { loader, toast } from "../js/utils/plugins";
@@ -143,7 +152,7 @@ import { loader, toast } from "../js/utils/plugins";
 export default {
   data() {
     return {
-      logo,
+      logo: null,
       show_pass: false,
       recordar_cuenta: false,
       form: {
@@ -165,13 +174,25 @@ export default {
       this.info_app = await window.Capacitor.Plugins.App.getInfo();
       console.log("[APP INFO]", this.info_app);
     }
+
+    let dispatch = this.$store.dispatch;
+
+    await dispatch("setting/query_data");
   },
 
   computed: {
     ...mapGetters({
       ip_service: "setting/get_service",
       get_url: "setting/get_url",
+      setting: "setting/get_data",
     }),
+  },
+
+  watch: {
+    setting: function (val) {
+      let nit = parseFloat(val?.id_empr) || 0;
+      this.logo = `https://www.titansoluciones.net/img/${nit}.png`;
+    },
   },
 
   methods: {
@@ -204,7 +225,7 @@ export default {
             message.push(form.user);
             message.push(form.password);
 
-            this.save_user({ data: message });
+            this.save_user({ data: message, remember_account: this.recordar_cuenta });
 
             loader(false);
           })
@@ -235,13 +256,12 @@ export default {
     flex-direction: column
     padding: 0
 
+  div
+    width: 100px
+    height: 100px
+
   .item-content
     padding: 0
-
-  img
-    max-width: 80%
-    max-height: 80%
-    margin: 5px 0 10px 0
 
 .input-login > .item-content > .item-media
   padding: 3px 0 0 0 !important
