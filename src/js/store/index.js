@@ -1,5 +1,6 @@
 
 import { createStore } from 'vuex';
+import middleware from './modules/middleware';
 import user from './modules/user'
 import setting from './modules/setting'
 import products from './modules/products'
@@ -10,6 +11,7 @@ import remisiones from './modules/remisiones';
 
 export const store = createStore({
   modules: {
+    middleware,
     user,
     setting,
     products,

@@ -23,7 +23,7 @@
         <f7-popover id="user-action" :backdrop="false">
           <f7-list>
             <f7-list-item popover-close>
-              <b>{{ info.user.name }}</b>
+              <b>{{ info.user.names }}</b>
               <!-- <f7-badge color="blue">OPERADOR</f7-badge> -->
             </f7-list-item>
 
@@ -37,7 +37,7 @@
         </f7-popover>
       </f7-nav-right>
     </f7-navbar>
-    <Nav :user="info.user.name" :id_company="info.company.id"></Nav>
+    <Nav :user="info.user.names" :id_company="info.company.id"></Nav>
 
     <f7-list>
       <f7-list
@@ -82,7 +82,7 @@ export default {
 
   computed: {
     ...mapGetters({
-      info: "user/get_info",
+      info: "middleware/get_info",
       setting: "setting/get_data",
     }),
   },
@@ -90,13 +90,12 @@ export default {
   watch: {
     setting: function (val) {
       let nit = parseFloat(val?.id_empr) || 0;
-      console.log(nit);
       this.logo = `https://www.titansoluciones.net/img/${nit}.png`;
     },
   },
 
   methods: {
-    ...mapActions({ logout: "user/logout" }),
+    ...mapActions({ logout: "middleware/logout" }),
   },
 };
 </script>

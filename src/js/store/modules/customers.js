@@ -55,12 +55,12 @@ export default {
 
         download(state) {
             return new Promise(async (resolve, reject) => {
-                let info = state.rootGetters['user/get_info'] || {}
+                let info = state.rootGetters['middleware/get_info'] || {}
                 let ip_service = state.rootState.setting?.ip_service || ""
 
                 let data = {
                     data: {
-                        importarhtml: info.token,
+                        importarhtml: info.session,
                     },
                     url: state.rootGetters['setting/get_url']('customers'),
                 }

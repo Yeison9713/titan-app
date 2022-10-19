@@ -333,7 +333,7 @@ export default {
   computed: {
     ...mapGetters({
       config_user: "user/get_data_config",
-      info_user: "user/get_info",
+      info_user: "middleware/get_info",
       products: "products/get_list",
       presentations: "presentations/get_list",
       customers: "customers/get_list",

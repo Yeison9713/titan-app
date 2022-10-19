@@ -43,12 +43,12 @@ function securedRoute(path, component, required) {
       required: required || false,
     },
     async({ to, from, resolve, reject }) {
-      let info = store.getters['user/get_info']
+      let info = store.getters['middleware/get_info']
       const required = to.route.meta ? to.route.meta.required : false
 
       if (required && !info) {
         resolve({ component: Ingreso })
-      } else if (info && info.token && to.path == '/ingreso/') {
+      } else if (info && info.session && to.path == '/ingreso/') {
         resolve({ component: User })
       } else {
         resolve({ component: component })

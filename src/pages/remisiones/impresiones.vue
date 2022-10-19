@@ -111,7 +111,7 @@ export default {
   computed: {
     ...mapGetters({
       detalle: "remisiones/get_list",
-      info_user: "user/get_info",
+      info_user: "middleware/get_info",
     }),
   },
   methods: {

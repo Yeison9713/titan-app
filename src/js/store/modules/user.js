@@ -109,15 +109,6 @@ export default {
 
     getters: {
         get_menu: (state) => state.menu,
-        get_info: (state) => {
-            try {
-                let token = localStorage.token || sessionStorage.token
-                return JSON.parse(atob(token) || '{}')
-            } catch (error) {
-                return {}
-            }
-        },
-
         get_data_config: (state) => state.data_config
     },
 
@@ -129,37 +120,6 @@ export default {
     },
 
     actions: {
-        login(state, { data, remember_account }) {
-            let datos = {
-                token: data.at(0),
-                code: data.at(4),
-
-                company: {
-                    id: data.at(5),
-                    name: data.at(2),
-                },
-
-                user: {
-                    id: data.at(6),
-                    name: data.at(1),
-                    full_name: data.at(3),
-                    password: data.at(7),
-                },
-            }
-
-            let encode = btoa(JSON.stringify(datos))
-            remember_account ? localStorage.token = encode : sessionStorage.token = encode
-
-            setTimeout(() => { location.reload() }, 250);
-        },
-
-        logout() {
-            localStorage.clear()
-            sessionStorage.clear()
-
-            setTimeout(() => { location.reload() }, 250);
-        },
-
         save_config(state, data) {
             return new Promise(async (resolve, reject) => {
 

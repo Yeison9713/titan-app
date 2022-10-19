@@ -15,7 +15,7 @@
           <f7-list-item id="logo">
             <div
               :style="{
-                backgroundImage: `url(${logo})`,
+                backgroundImage: `url(${form.logo})`,
                 backgroundSize: '90%',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
@@ -97,7 +97,7 @@
             checkbox
             title="Recordar cuenta"
             name="demo-checkbox"
-            v-model:checked="recordar_cuenta"
+            v-model:checked="form.remember_account"
           ></f7-list-item>
 
           <f7-list-item>
@@ -140,101 +140,90 @@
   </f7-page>
 </template>
 
-
-
 <script>
-import { f7 } from "framework7-vue";
-import { request_titan } from "../js/utils/request_titan";
-import { mapGetters, mapActions } from "vuex";
+import { ref, reactive, computed, onMounted, watch } from "vue";
 
+import { f7 } from "framework7-vue";
+import { useStore } from "vuex";
 import { loader, toast } from "../js/utils/plugins";
 
 export default {
-  data() {
-    return {
+  setup() {
+    const store = useStore();
+    const show_pass = ref(false);
+
+    const form = reactive({
       logo: null,
-      show_pass: false,
-      recordar_cuenta: false,
-      form: {
-        company: null,
-        user: null,
-        password: null,
+      company: null,
+      user: null,
+      password: null,
+      remember_account: false,
+    });
+
+    const errores = reactive({
+      company: false,
+      user: false,
+      password: false,
+    });
+
+    const info_app = reactive({
+      id: null,
+      name: null,
+      build: null,
+      version: null,
+    });
+
+    watch(
+      () => store.getters["setting/get_data"],
+      (val) => {
+        let nit = parseFloat(val?.id_empr) || 0;
+        form.logo = `https://www.titansoluciones.net/img/${nit}.png`;
+        form.company = nit;
       },
-      errores: {
-        company: false,
-        user: false,
-        password: false,
-      },
-      info_app: {},
-    };
-  },
+      { deep: true }
+    );
 
-  async created() {
-    if (window.Capacitor || f7.device.electron) {
-      this.info_app = await window.Capacitor.Plugins.App.getInfo();
-      console.log("[APP INFO]", this.info_app);
-    }
-
-    let dispatch = this.$store.dispatch;
-
-    await dispatch("setting/query_data");
-  },
-
-  computed: {
-    ...mapGetters({
-      ip_service: "setting/get_service",
-      get_url: "setting/get_url",
-      setting: "setting/get_data",
-    }),
-  },
-
-  watch: {
-    setting: function (val) {
-      let nit = parseFloat(val?.id_empr) || 0;
-      this.logo = `https://www.titansoluciones.net/img/${nit}.png`;
-    },
-  },
-
-  methods: {
-    ...mapActions({
-      save_user: "user/login",
-    }),
-
-    validate_login() {
-      let { form, errores } = this;
-
+    const validate_login = () => {
       if (!form.company) errores.company = true;
       else if (!form.user) errores.user = true;
       else if (!form.password) errores.password = true;
       else {
         loader(true);
 
-        let data = {
-          data: {
-            importarhtml: `${form.company}|${form.user}|${form.password}|0|`,
-          },
-
-          url: this.get_url("login"),
-        };
-
-        request_titan({ url: this.ip_service, data })
+        store
+          .dispatch("middleware/login", { ...form })
           .then((res) => {
-            let { message } = res;
-
-            message.push(form.company);
-            message.push(form.user);
-            message.push(form.password);
-
-            this.save_user({ data: message, remember_account: this.recordar_cuenta });
-
-            loader(false);
+            location.reload();
           })
           .catch((error) => {
+            console.log(error)
             loader(false);
             toast(error?.message[0] || error);
           });
       }
-    },
+    };
+
+    onMounted(async () => {
+      store.dispatch("setting/query_data");
+
+      if (window.Capacitor || f7.device.electron) {
+        let info = await window.Capacitor.Plugins.App.getInfo();
+        info_app.id = info.id;
+        info_app.name = info.name;
+        info_app.build = info.build;
+        info_app.version = info.version;
+
+        console.log("[APP INFO]", info_app);
+      }
+    });
+
+    return {
+      show_pass,
+      form,
+      errores,
+      info_app,
+      validate_login,
+    };
   },
 };
 </script>
