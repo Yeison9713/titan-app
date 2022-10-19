@@ -18,6 +18,11 @@
         }"
       >
         <f7-list>
+          <f7-list-item>
+            <span>Offline</span>
+            <f7-toggle v-model:checked="form.state_network"></f7-toggle>
+          </f7-list-item>
+
           <f7-list-input
             label="Prefijo"
             type="text"
@@ -130,6 +135,7 @@ export default {
   data() {
     return {
       form: {
+        state_network: false,
         prefijo: null,
         numero: null,
         ubicacion: {
@@ -191,10 +197,11 @@ export default {
           loader_src.setTitle(`Guardando configuracion...`);
 
           await dispatch("user/save_config", [_.cloneDeep(form)]);
+          // await dispatch("setting/state_network", { state_network });
 
           loader(false);
           toast("Proceso terminado correctamente");
-          this.close()
+          this.close();
         } catch (error) {
           loader(false);
           toast("Ocurrio un error guardando la informacion ");

@@ -67,7 +67,7 @@ export default {
 
   computed: {
     ...mapGetters({
-      menu_user: "user/get_menu",
+      menu_user: "setting/get_menu_user",
     }),
   },
 
