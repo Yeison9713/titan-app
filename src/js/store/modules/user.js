@@ -72,12 +72,7 @@ export default {
                                 id: 211,
                                 name: 'Saldo inventarios',
                                 link: 'reporte/inventarios'
-                            },
-                            {
-                                id: 212,
-                                name: 'P.Planta y equipos',
-                                link: 'reporte/p_p_equipos'
-                            },
+                            }
                         ]
                     },
                     {

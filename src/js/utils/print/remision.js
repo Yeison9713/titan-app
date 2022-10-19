@@ -156,20 +156,22 @@ var remision_pos = (data, logo) => {
                     },
                 ],
             },
-            // {
-            //     canvas: [
-            //         {
-            //             type: "line",
-            //             x1: 0,
-            //             y1: 0,
-            //             x2: width - 20,
-            //             y2: 0,
-            //             lineWidth: 0.5,
-            //             dash: { length: 5, space: 2 },
-            //         },
-            //     ],
-            //     margin: [0, 10, 0, 10],
-            // },
+
+            {
+                canvas: [
+                    {
+                        type: "line",
+                        x1: 0,
+                        y1: 0,
+                        x2: width - 20,
+                        y2: 0,
+                        lineWidth: 0.5,
+                        dash: { length: 5, space: 2 },
+                    },
+                ],
+                margin: [0, 10, 0, 10],
+            },
+
             {
                 columns: [
                     {
@@ -197,23 +199,23 @@ var remision_pos = (data, logo) => {
                         bold: true,
                     },
                 ],
-                margin: [0, 10, 0, 0],
+                // margin: [0, 10, 0, 0],
             },
             productos,
-            // {
-            //     canvas: [
-            //         {
-            //             type: "line",
-            //             x1: 0,
-            //             y1: 0,
-            //             x2: width - 20,
-            //             y2: 0,
-            //             lineWidth: 0.5,
-            //             dash: { length: 5, space: 2 },
-            //         },
-            //     ],
-            //     margin: [0, 10, 0, 10],
-            // },
+            {
+                canvas: [
+                    {
+                        type: "line",
+                        x1: 0,
+                        y1: 0,
+                        x2: width - 20,
+                        y2: 0,
+                        lineWidth: 0.5,
+                        dash: { length: 5, space: 2 },
+                    },
+                ],
+                margin: [0, 10, 0, 10],
+            },
             {
                 columns: [
                     {
@@ -230,88 +232,96 @@ var remision_pos = (data, logo) => {
                         fontSize: 9,
                     },
                 ],
+                // margin: [0, 10, 0, 10]
             },
-            {
-                columns: [
-                    {
-                        width: "40%",
-                        text: "Tarifa",
-                    },
-                    {
-                        width: "30%",
-                        text: "Base",
-                    },
-                    {
-                        width: "30%",
-                        text: "Iva",
-                    },
-                ],
-                margin: [0, 15, 0, 0],
-            },
-            {
-                columns: [
-                    {
-                        width: "40%",
-                        text: data.tarifa1,
-                    },
-                    {
-                        width: "30%",
-                        text: data.base_iva1,
-                    },
-                    {
-                        width: "30%",
-                        text: data.vlr_iva1,
-                    },
-                ],
-            },
-            {
-                columns: [
-                    {
-                        width: "40%",
-                        text: data.tarifa2,
-                    },
-                    {
-                        width: "30%",
-                        text: data.base_iva2,
-                    },
-                    {
-                        width: "30%",
-                        text: data.vlr_iva2,
-                    },
-                ],
-            },
+            // impuestos comentados
+
             // {
-            //     canvas: [
+            //     columns: [
             //         {
-            //             type: "line",
-            //             x1: 0,
-            //             y1: 0,
-            //             x2: width - 20,
-            //             y2: 0,
-            //             lineWidth: 0.5,
-            //             dash: { length: 5, space: 2 },
+            //             width: "40%",
+            //             text: "Tarifa",
+            //         },
+            //         {
+            //             width: "30%",
+            //             text: "Base",
+            //         },
+            //         {
+            //             width: "30%",
+            //             text: "Iva",
             //         },
             //     ],
-            //     margin: [0, 5, 0, 10],
+            //     margin: [0, 15, 0, 0],
             // },
-            [
-                {
-                    columns: [
-                        {
-                            width: "40%",
-                            text: "0%",
-                        },
-                        {
-                            width: "30%",
-                            text: "0",
-                        },
-                        {
-                            width: "30%",
-                            text: "0",
-                        },
-                    ],
-                },
-            ],
+            // {
+            //     columns: [
+            //         {
+            //             width: "40%",
+            //             text: data.tarifa1,
+            //         },
+            //         {
+            //             width: "30%",
+            //             text: data.base_iva1,
+            //         },
+            //         {
+            //             width: "30%",
+            //             text: data.vlr_iva1,
+            //         },
+            //     ],
+            // },
+            // {
+            //     columns: [
+            //         {
+            //             width: "40%",
+            //             text: data.tarifa2,
+            //         },
+            //         {
+            //             width: "30%",
+            //             text: data.base_iva2,
+            //         },
+            //         {
+            //             width: "30%",
+            //             text: data.vlr_iva2,
+            //         },
+            //     ],
+            // },
+
+            {
+                canvas: [
+                    {
+                        type: "line",
+                        x1: 0,
+                        y1: 0,
+                        x2: width - 20,
+                        y2: 0,
+                        lineWidth: 0.5,
+                        dash: { length: 5, space: 2 },
+                    },
+                ],
+                margin: [0, 5, 0, 10],
+            },
+
+            // total impuestos
+
+            // [
+            //     {
+            //         columns: [
+            //             {
+            //                 width: "40%",
+            //                 text: "0%",
+            //             },
+            //             {
+            //                 width: "30%",
+            //                 text: "0",
+            //             },
+            //             {
+            //                 width: "30%",
+            //                 text: "0",
+            //             },
+            //         ],
+            //     },
+            // ],
+
             // {
             //     canvas: [
             //         {

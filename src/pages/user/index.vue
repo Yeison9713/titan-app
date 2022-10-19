@@ -10,7 +10,9 @@
         ></f7-link>
       </f7-nav-left>
 
-      <f7-nav-title-large>titan-app</f7-nav-title-large>
+      <f7-nav-title-large>{{
+        setting?.descrip_empr || "Falta configurar"
+      }}</f7-nav-title-large>
 
       <f7-nav-right>
         <f7-link
@@ -36,6 +38,27 @@
       </f7-nav-right>
     </f7-navbar>
     <Nav :user="info.user.name" :id_company="info.company.id"></Nav>
+
+    <f7-list>
+      <f7-list
+        class="width-100"
+        inset
+        no-hairlines
+        no-hairlines-between
+        :style="{ margin: '11px 0 5px 0' }"
+      >
+        <f7-list-item id="logo">
+          <div
+            :style="{
+              backgroundImage: `url(${logo})`,
+              backgroundSize: '90%',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+            }"
+          ></div>
+        </f7-list-item>
+      </f7-list>
+    </f7-list>
   </f7-page>
 </template>
 
@@ -49,13 +72,27 @@ export default {
     Nav,
   },
   data() {
-    return {};
+    return { logo: null };
+  },
+
+  async created() {
+    let dispatch = this.$store.dispatch;
+    await dispatch("setting/query_data");
   },
 
   computed: {
     ...mapGetters({
       info: "user/get_info",
+      setting: "setting/get_data",
     }),
+  },
+
+  watch: {
+    setting: function (val) {
+      let nit = parseFloat(val?.id_empr) || 0;
+      console.log(nit);
+      this.logo = `https://www.titansoluciones.net/img/${nit}.png`;
+    },
   },
 
   methods: {
@@ -63,3 +100,35 @@ export default {
   },
 };
 </script>
+
+<style lang="sass">
+[data-name=user]
+
+  .title-large-text
+    font-size: 20px !important
+
+  .page-content
+    background: #fff !important
+
+  .list
+    height: 80%
+    display: flex
+    justify-content: center
+    align-items: center
+
+#logo
+  display: flex
+  justify-content: space-around
+  align-items: center
+
+  .item-inner
+    flex-direction: column
+    padding: 0
+
+  div
+    width: 200px
+    height: 200px
+
+  .item-content
+    padding: 0
+</style>

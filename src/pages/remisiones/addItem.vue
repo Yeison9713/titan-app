@@ -61,7 +61,7 @@
                 <f7-col width="50">
                   <f7-list-input
                     label="Cantidad"
-                    type="text"
+                    type="number"
                     outline
                     floating-label
                     v-model:value="form.cantidad"
@@ -71,7 +71,7 @@
                 <f7-col width="50">
                   <f7-list-input
                     label="Valor unitario"
-                    type="text"
+                    type="number"
                     outline
                     floating-label
                     v-model:value="form.valorUnitario"
@@ -166,6 +166,9 @@ export default {
     "form.cantidad": function () {
       this.calcularTotal();
     },
+    "form.presentacion": function () {
+      this.calcularTotal();
+    },
   },
   methods: {
     format_num,
@@ -198,11 +201,18 @@ export default {
       }
     },
     calcularTotal() {
-      const { cantidad, valorUnitario } = this.form;
+      const { cantidad, valorUnitario, presentacion } = this.form;
+
+      let obj_presentation = this.presentaciones.find(
+        (e) => e.codigo_rep == presentacion
+      );
+
+      let cant_rep = parseFloat(obj_presentation?.cantidad_rep) || 1;
+
       const valorCantidad = parseFloat(cantidad) || 0;
       const unitario = parseFloat(valorUnitario) || 0;
 
-      const total = unitario * valorCantidad;
+      const total = cant_rep * valorCantidad * unitario;
       this.form.total = parseFloat(total.toFixed(0));
     },
     init_form() {

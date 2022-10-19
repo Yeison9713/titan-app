@@ -36,15 +36,15 @@ const imprimir = ({ data = {}, formato = '', nit = 0 }) => {
 
             let dd = print[formato](data, logo)
 
-            // const pdf = pdfMake.createPdf(dd);
+            const pdf = pdfMake.createPdf(dd);
 
-            // pdf.getBase64(data => {
-            //     console.log("DATA", data);
-            //     resolve(data);
-            // });
+            pdf.getBase64(data => {
+                console.log("DATA", data);
+                resolve(data);
+            });
 
-            pdfMake.createPdf(dd).open();
-            resolve('')
+            // pdfMake.createPdf(dd).open();
+            // resolve('')
 
             // return 'Impresion generada correctamente'
         } catch (error) {

@@ -363,9 +363,9 @@ export default {
         agencia: null,
         descrip_agencia: null,
         fecha: current_date().split("/").reverse().join("-"),
-        formaPago: null,
+        formaPago: 1,
         diasPlazo: null,
-        medioPago: null,
+        medioPago: 10,
         observaciones: null,
         total_rem: 0,
       };
@@ -380,7 +380,7 @@ export default {
     },
 
     addItemDetail(item, index) {
-      console.log(item, index);
+      // console.log(item, index);
 
       if (index >= 0) this.detalle[index] = _.cloneDeep(item);
       else this.detalle.push(item);
@@ -461,7 +461,24 @@ export default {
           };
 
           imprimir({ data: _.cloneDeep(datos), formato: "remision_pos" })
-            .then(resolve)
+            .then((base64) => {
+              // console.log(base64);
+
+              window.plugins.PrintPDF.print({
+                data: base64,
+                type: "Data",
+                title: "test print",
+                success: function () {
+                  console.log("success");
+                },
+                error: function (data) {
+                  data = JSON.parse(Data);
+                  console.log("failed" + data.error);
+                },
+              });
+
+              resolve();
+            })
             .catch((error) => {
               console.log(error);
               reject();
