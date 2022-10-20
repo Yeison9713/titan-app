@@ -7,6 +7,7 @@ export default {
 
     state: {
         data_config: {
+            state_network: true,
             prefijo: null,
             numero: null,
             ubicacion: {

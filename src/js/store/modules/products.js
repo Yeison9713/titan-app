@@ -32,8 +32,17 @@ export default {
         query_list(state) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    let data = await idb.get(table)
-                    state.commit('set_data', data)
+                    let config_user = state.rootGetters['user/get_data_config']
+
+                    if (!config_user.id) return resolve();
+
+                    if (!config_user.state_network) {
+                        let data = await idb.get(table)
+                        state.commit('set_data', data)
+                    } else {
+                        await state.dispatch("download", { online: true })
+                    }
+
                     resolve()
                 } catch (err) {
                     reject(err)
@@ -41,7 +50,7 @@ export default {
             })
         },
 
-        download(state) {
+        download(state, { online = false }) {
             return new Promise(async (resolve, reject) => {
                 let info = state.rootGetters['middleware/get_info'] || {}
                 let ip_service = state.rootState.setting?.ip_service || ""
@@ -57,7 +66,7 @@ export default {
                     .then(async (res) => {
                         try {
 
-                            await idb.set_db({ table, data: res.message })
+                            if (!online) await idb.set_db({ table, data: res.message });
                             state.commit('set_data', res.message)
                             resolve()
 

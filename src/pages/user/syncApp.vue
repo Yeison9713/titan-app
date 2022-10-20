@@ -258,6 +258,9 @@ export default {
 
         loader(false);
         toast("Proceso terminado correctamente");
+        setTimeout(() => {
+          location.reload();
+        }, 500);
       } catch (err) {
         loader(false);
         toast(

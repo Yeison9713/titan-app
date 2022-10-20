@@ -1,5 +1,6 @@
 import { request_titan } from '../../utils/request_titan'
 import { idb } from '../../utils/idb'
+import { menu_user } from '../../utils/menu/user.js'
 
 const table = 'setting'
 
@@ -17,94 +18,11 @@ export default {
             presentations: "ptoVta/dlls/CfunidadprJ.dll",
             products: "financiero/dlls/CfcarglistasJ.dll",
             cities: "Datos/BASE/CIUDADES_DIAN.json",
+            agencies: "financiero/dlls/Cfagenciasj.dll",
+            consecutive: "financiero/dlls/PrConsecutivoJ.dll"
         },
         data: {},
-        menu_user: [
-            {
-                id: 1,
-                name: "Procesos",
-                submenu: [
-                    {
-                        id: 11,
-                        name: "Remisiones",
-                        submenu: [
-                            {
-                                id: 111,
-                                name: "Remision para facturar",
-                                link: "/remisiones/facturar/",
-                            },
-                            {
-                                id: 112,
-                                name: "Reimpresion de remisiones",
-                                link: "/remisiones/imprimir/",
-                            },
-                        ],
-                    },
-                    {
-                        id: 12,
-                        name: "Tesorería",
-                        submenu: [
-                            {
-                                id: 121,
-                                name: "Registros",
-                            },
-                            {
-                                id: 122,
-                                name: "Reimpresion",
-                            },
-                            {
-                                id: 123,
-                                name: "Cierre de caja",
-                            },
-                        ],
-                    },
-                ],
-            },
-            {
-                id: 2,
-                name: 'Reportes',
-                submenu: [
-                    {
-                        id: 21,
-                        name: "Inventarios",
-                        submenu: [
-                            {
-                                id: 211,
-                                name: 'Saldo inventarios',
-                                link: 'reporte/inventarios'
-                            }
-                        ]
-                    },
-                    {
-                        id: 22,
-                        name: "Cartera",
-                        link: '/reporte/cartera/'
-                    }
-                ]
-            },
-            {
-                id: 3,
-                name: "Configuración",
-                submenu: [
-                    {
-                        id: 31,
-                        name: "Punto de venta",
-                        submenu: [
-                            {
-                                id: 311,
-                                name: "Ruts",
-                                link: '/ruts/config/'
-                            },
-                        ],
-                    },
-                    {
-                        id: 32,
-                        name: "Sincronizar mobile",
-                        link: '/usuario/synapp/'
-                    }
-                ],
-            },
-        ],
+        menu_user: []
     },
 
     getters: {
@@ -119,15 +37,33 @@ export default {
     mutations: {
         set_data(state, data) {
             state.data = { ...data[0] }
+        },
+        set_menu(state, data) {
+            state.menu_user = data
         }
     },
 
     actions: {
+        load_menu(state) {
+            return new Promise((resolve, reject) => {
+                state.commit('set_menu', menu_user)
+                resolve()
+            })
+        },
         query_data(state) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    let data = await idb.get(table)
-                    state.commit('set_data', data)
+                    let config_user = state.rootGetters['user/get_data_config']
+
+                    if (!config_user.id) return resolve();
+
+                    if (!config_user.state_network) {
+                        let data = await idb.get(table)
+                        state.commit('set_data', data)
+                    } else {
+                        await state.dispatch("download", { online: true })
+                    }
+
                     resolve()
                 } catch (err) {
                     reject(err)
@@ -135,7 +71,7 @@ export default {
             })
         },
 
-        download(state) {
+        download(state, { online = false }) {
             return new Promise(async (resolve, reject) => {
                 let info = state.rootGetters['middleware/get_info'] || {}
 
@@ -150,11 +86,12 @@ export default {
                     .then(async (res) => {
 
                         try {
-
-                            await idb.clearTable({ table })
-                            await idb.set_db({ table, data: res.message })
+                            if (!online) {
+                                await idb.clearTable({ table })
+                                await idb.set_db({ table, data: res.message })
+                            }
                             state.commit('set_data', res.message)
-                            resolve()
+                            resolve();
 
                         } catch (error) {
                             reject(error)

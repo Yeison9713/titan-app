@@ -332,7 +332,8 @@ export default {
 
   computed: {
     ...mapGetters({
-      config_user: "user/get_data_config",
+      // config_user: "user/get_data_config",
+      consecutive: "remisiones/get_consecutive",
       info_user: "middleware/get_info",
       products: "products/get_list",
       presentations: "presentations/get_list",
@@ -341,7 +342,8 @@ export default {
   },
 
   watch: {
-    config_user: function (val) {
+    consecutive: function (val) {
+      console.log({ ...val });
       this.form.agencia = val?.agencia?.codigo;
       this.form.descrip_agencia = `${val?.agencia?.codigo} - ${val?.agencia?.nombre}`;
       this.form.consecutivo = val.agencia.consecutivo;
@@ -357,6 +359,7 @@ export default {
 
     async init_form() {
       this.detalle = [];
+      loader(true);
       this.form = {
         cliente: null,
         consecutivo: null,
@@ -374,9 +377,12 @@ export default {
 
       await dispatch("user/query_data_config");
       await dispatch("setting/query_data");
+      await dispatch("agencies/download");
+      await dispatch("remisiones/validate_consecutive");
+      await dispatch("customers/query_list");
       await dispatch("products/query_list");
       await dispatch("presentations/query_list");
-      await dispatch("customers/query_list");
+      loader(false);
     },
 
     addItemDetail(item, index) {

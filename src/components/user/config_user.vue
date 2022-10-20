@@ -19,7 +19,7 @@
       >
         <f7-list>
           <f7-list-item>
-            <span>Offline</span>
+            <span>Online</span>
             <f7-toggle v-model:checked="form.state_network"></f7-toggle>
           </f7-list-item>
 
@@ -135,7 +135,7 @@ export default {
   data() {
     return {
       form: {
-        state_network: false,
+        state_network: true,
         prefijo: null,
         numero: null,
         ubicacion: {
@@ -202,6 +202,9 @@ export default {
           loader(false);
           toast("Proceso terminado correctamente");
           this.close();
+          setTimeout(() => {
+            location.reload()
+          }, 500);
         } catch (error) {
           loader(false);
           toast("Ocurrio un error guardando la informacion ");

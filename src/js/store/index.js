@@ -8,6 +8,7 @@ import presentations from './modules/presentations'
 import customers from './modules/customers'
 import cities from './modules/cities';
 import remisiones from './modules/remisiones';
+import agencies from './modules/agencies';
 
 export const store = createStore({
   modules: {
@@ -18,6 +19,7 @@ export const store = createStore({
     presentations,
     customers,
     cities,
+    agencies,
     remisiones
   }
 })

@@ -44,8 +44,17 @@ export default {
         query_list(state) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    let data = await idb.get(table)
-                    state.commit('set_data', data)
+                    let config_user = state.rootGetters['user/get_data_config']
+
+                    if (!config_user.id) return resolve();
+
+                    if (!config_user.state_network) {
+                        let data = await idb.get(table)
+                        state.commit('set_data', data)
+                    } else {
+                        await state.dispatch("download", { online: true })
+                    }
+
                     resolve()
                 } catch (err) {
                     reject(err)
@@ -53,7 +62,7 @@ export default {
             })
         },
 
-        download(state) {
+        download(state, { online = false }) {
             return new Promise(async (resolve, reject) => {
                 let info = state.rootGetters['middleware/get_info'] || {}
                 let ip_service = state.rootState.setting?.ip_service || ""
@@ -71,7 +80,10 @@ export default {
                         try {
                             let filtro = res.message.filter(e => e.identificacion_rut != "")
 
-                            await idb.set_db({ table, data: filtro })
+                            if (!online) {
+                                await idb.set_db({ table, data: filtro })
+                            }
+
                             state.commit('set_data', filtro)
                             resolve()
 

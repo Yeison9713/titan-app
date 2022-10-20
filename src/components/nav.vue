@@ -67,7 +67,9 @@ export default {
 
   computed: {
     ...mapGetters({
+      config_user: "user/get_data_config",
       menu_user: "setting/get_menu_user",
+      setting: "setting/get_data",
     }),
   },
 
@@ -77,6 +79,13 @@ export default {
       return data.match(/\b([A-Z])/g).join("");
     },
     validate_link(item) {
+      if (
+        (!this.setting.id_empr || !this.config_user?.id) &&
+        item?.link != "/usuario/synapp/"
+      ) {
+        return "#";
+      }
+
       if (item.submenu) return "#";
       if (item.link) return item.link;
 

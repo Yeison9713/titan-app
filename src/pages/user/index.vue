@@ -77,7 +77,9 @@ export default {
 
   async created() {
     let dispatch = this.$store.dispatch;
+    await dispatch("user/query_data_config");
     await dispatch("setting/query_data");
+    await dispatch("setting/load_menu");
   },
 
   computed: {
