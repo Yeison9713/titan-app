@@ -196,7 +196,7 @@ export default {
             location.reload();
           })
           .catch((error) => {
-            console.log(error)
+            console.log(error);
             loader(false);
             toast(error?.message[0] || error);
           });
@@ -204,7 +204,7 @@ export default {
     };
 
     onMounted(async () => {
-      store.dispatch("setting/query_data");
+      store.dispatch("setting/query_data", true);
 
       if (window.Capacitor || f7.device.electron) {
         let info = await window.Capacitor.Plugins.App.getInfo();

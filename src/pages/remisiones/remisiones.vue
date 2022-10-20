@@ -48,6 +48,7 @@
                 outline
                 floating-label
                 v-model:value="form.fecha"
+                :disabled="true"
               />
             </f7-col>
           </f7-row>
@@ -260,14 +261,7 @@
         <f7-block strong>
           <f7-row>
             <f7-col>
-              <f7-button fill color="green" @click="grabar()"
-                >Grabar
-              </f7-button>
-            </f7-col>
-            <f7-col>
-              <f7-button fill color="gray" @click="grabar(true)"
-                >Imprimir
-              </f7-button>
+              <f7-button fill color="green" @click="grabar">Grabar </f7-button>
             </f7-col>
           </f7-row>
         </f7-block>
@@ -343,7 +337,6 @@ export default {
 
   watch: {
     consecutive: function (val) {
-      console.log({ ...val });
       this.form.agencia = val?.agencia?.codigo;
       this.form.descrip_agencia = `${val?.agencia?.codigo} - ${val?.agencia?.nombre}`;
       this.form.consecutivo = val.agencia.consecutivo;
@@ -354,7 +347,6 @@ export default {
     format_num,
     ...mapActions({
       save_remision: "remisiones/save",
-      add_consecutivo: "user/save_consecutivo",
     }),
 
     async init_form() {
@@ -367,7 +359,7 @@ export default {
         descrip_agencia: null,
         fecha: current_date().split("/").reverse().join("-"),
         formaPago: 1,
-        diasPlazo: null,
+        diasPlazo: 0,
         medioPago: 10,
         observaciones: null,
         total_rem: 0,
@@ -386,8 +378,6 @@ export default {
     },
 
     addItemDetail(item, index) {
-      // console.log(item, index);
-
       if (index >= 0) this.detalle[index] = _.cloneDeep(item);
       else this.detalle.push(item);
 
@@ -420,7 +410,7 @@ export default {
       this.searchState = false;
     },
 
-    async grabar(print = false) {
+    async grabar() {
       try {
         let { form, detalle } = this;
 
@@ -443,9 +433,8 @@ export default {
             },
           };
 
-          await this.save_remision(_.cloneDeep(datos));
-          await this.add_consecutivo();
-          if (print) await this.imprimir_remisiones(datos);
+          const response = await this.save_remision(_.cloneDeep(datos));
+          await this.imprimir_remisiones(response.message);
 
           this.init_form();
           loader(false);
@@ -468,20 +457,20 @@ export default {
 
           imprimir({ data: _.cloneDeep(datos), formato: "remision_pos" })
             .then((base64) => {
-              // console.log(base64);
-
-              window.plugins.PrintPDF.print({
-                data: base64,
-                type: "Data",
-                title: "test print",
-                success: function () {
-                  console.log("success");
-                },
-                error: function (data) {
-                  data = JSON.parse(Data);
-                  console.log("failed" + data.error);
-                },
-              });
+              if (window.Capacitor) {
+                window.plugins.PrintPDF.print({
+                  data: base64,
+                  type: "Data",
+                  title: "test print",
+                  success: function () {
+                    console.log("success");
+                  },
+                  error: function (data) {
+                    data = JSON.parse(Data);
+                    console.log("failed" + data.error);
+                  },
+                });
+              }
 
               resolve();
             })

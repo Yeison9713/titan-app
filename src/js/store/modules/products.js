@@ -56,9 +56,7 @@ export default {
                 let ip_service = state.rootState.setting?.ip_service || ""
 
                 let data = {
-                    data: {
-                        importarhtml: info.session + "1|0000|",
-                    },
+                    data: info.session + "1|0000|",
                     url: state.rootGetters['setting/get_url']('products'),
                 }
 

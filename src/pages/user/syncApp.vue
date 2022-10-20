@@ -242,19 +242,19 @@ export default {
         let loader_src = loader(true);
 
         loader_src.setTitle(`Descargando configuracion...`);
-        await store.dispatch("setting/download");
+        await store.dispatch("setting/download", { online: false });
 
         loader_src.setTitle(`Descargando productos...`);
-        await store.dispatch("products/download");
+        await store.dispatch("products/download", { online: false });
 
         loader_src.setTitle(`Descargando presentaciones...`);
-        await store.dispatch("presentations/download");
+        await store.dispatch("presentations/download", { online: false });
 
         loader_src.setTitle(`Descargando clientes...`);
-        await store.dispatch("customers/download");
+        await store.dispatch("customers/download", { online: false });
 
         loader_src.setTitle(`Descargando ciudades...`);
-        await store.dispatch("cities/download");
+        await store.dispatch("cities/download", { online: false });
 
         loader(false);
         toast("Proceso terminado correctamente");

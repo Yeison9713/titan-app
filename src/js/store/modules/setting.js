@@ -19,7 +19,11 @@ export default {
             products: "financiero/dlls/CfcarglistasJ.dll",
             cities: "Datos/BASE/CIUDADES_DIAN.json",
             agencies: "financiero/dlls/Cfagenciasj.dll",
-            consecutive: "financiero/dlls/PrConsecutivoJ.dll"
+            // referrals
+            consecutive: "financiero/dlls/PrConsecutivoJ.dll",
+            save_referrals: "Ptovta/dlls/PrRemision03.dll",
+            print_referrals: "Ptovta/dlls/PrRemision01J.dll",
+            all_referrals: "Ptovta/dlls/PrRemision02J.dll"
         },
         data: {},
         menu_user: []
@@ -50,14 +54,14 @@ export default {
                 resolve()
             })
         },
-        query_data(state) {
+        query_data(state, omitir = false) {
             return new Promise(async (resolve, reject) => {
                 try {
                     let config_user = state.rootGetters['user/get_data_config']
 
-                    if (!config_user.id) return resolve();
+                    if (!config_user.id && !omitir) return resolve();
 
-                    if (!config_user.state_network) {
+                    if (!config_user.state_network || omitir) {
                         let data = await idb.get(table)
                         state.commit('set_data', data)
                     } else {
@@ -76,9 +80,7 @@ export default {
                 let info = state.rootGetters['middleware/get_info'] || {}
 
                 let data = {
-                    data: {
-                        importarhtml: info.session + "|",
-                    },
+                    data: info.session + "|",
                     url: state.getters.get_url('company'),
                 }
 

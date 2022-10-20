@@ -1,8 +1,6 @@
 import { format_num } from '../plugins'
 
 var remision_pos = (data, logo) => {
-    console.log(data)
-
     let width = 210;
     var total = parseFloat(data.total_rem);
     var productos = [];
@@ -149,7 +147,7 @@ var remision_pos = (data, logo) => {
                         fontSize: 8,
                     },
                     {
-                        text: `Vendedor: ${data.elaboro?.operador?.full_name}`,
+                        text: `Vendedor: ${data.elaboro?.operador?.complete_names}`,
                         margin: [0, 1],
                         alignment: "left",
                         fontSize: 8,
@@ -337,7 +335,7 @@ var remision_pos = (data, logo) => {
             //     margin: [0, 5, 0, 10],
             // },
             {
-                text: `Atendido por: ${data.elaboro?.operador?.full_name} \n\n\n\n\n`,
+                text: `Atendido por: ${data.elaboro?.operador?.complete_names} \n\n\n\n\n`,
             },
             {
                 text: `Firma del Cliente: ________________________________ \n\n\n\n`,

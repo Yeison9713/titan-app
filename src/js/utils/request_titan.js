@@ -24,7 +24,7 @@ const request_titan = ({ url, data = {}, method = 'POST', header = {} }) => {
         let formData = new FormData();
         for (var i in data) {
             if (i == 'url') { formData.append(i, data[i]) }
-            else if (i == 'data') { formData.append(i, data[i].importarhtml) }
+            else if (i == 'data') { formData.append(i, data[i]) }
             else { formData.append(i, JSON.stringify(data[i])) }
         }
 

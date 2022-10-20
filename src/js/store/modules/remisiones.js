@@ -55,9 +55,7 @@ export default {
                     let date = current_date().split("/").reverse().join("")
 
                     let data = {
-                        data: {
-                            importarhtml: info.session + `|4|${agencie?.codigo_agc}|REM|0|${date}|01|`,
-                        },
+                        data: info.session + `|4|${agencie?.codigo_agc}|REM|0|${date}|01|`,
                         url: state.rootGetters['setting/get_url']('consecutive'),
                     }
 
@@ -95,18 +93,141 @@ export default {
         },
 
         save(state, data = {}) {
-            return new Promise((resolve, reject) => {
+            return new Promise(async (resolve, reject) => {
 
                 try {
-                    data.date = new Date().getTime()
-                    idb.put({ table, data: data })
+                    let config_user = state.rootGetters['user/get_data_config']
 
-                    resolve({ msj: 'Creado correctamente!' })
+                    if (!config_user.state_network) {
+                        data.date = new Date().getTime()
+                        idb.put({ table, data: data })
+                        await state.dispatch("user/save_consecutivo", "", { root: true })
+
+                        resolve({ status: 0, message: data })
+                    } else {
+                        const response = await state.dispatch("post_online", { form: data })
+                        const data_print = await state.dispatch("post_print", response.message)
+
+                        const order_data_print = await state.dispatch("order_data_print", {
+                            data: data_print.message[0],
+                            form: data
+                        })
+
+                        resolve({ status: 0, message: order_data_print })
+                    }
+
                 } catch (error) {
                     reject({ msj: 'Ha ocurrido un error guardando: ' + error })
                 }
 
             })
+        },
+
+        post_online(state, { form }) {
+            return new Promise(async (resolve, reject) => {
+
+                try {
+
+                    let ip_service = state.rootState.setting?.ip_service || ""
+                    let data = await state.dispatch("order_data_save", { form })
+
+                    request_titan({ url: ip_service, data })
+                        .then(resolve).catch(reject)
+
+                } catch (error) {
+                    reject(error)
+                }
+
+            })
+        },
+
+        post_print(state, send_data) {
+            return new Promise((resolve, reject) => {
+
+                try {
+                    let info = state.rootGetters['middleware/get_info'] || {}
+                    let ip_service = state.rootState.setting?.ip_service || ""
+
+                    let data = {
+                        data: info.session + `|${send_data}${new Date().getFullYear()}|`,
+                        url: state.rootGetters['setting/get_url']('print_referrals'),
+                    }
+
+                    request_titan({ url: ip_service, data })
+                        .then(resolve)
+                        .catch(reject)
+
+                } catch (error) {
+                    reject(error)
+                }
+
+            })
+        },
+
+        order_data_print(state, { data, form }) {
+            return {
+                cliente: {
+                    identificacion_rut: data.nit_cliente.replace(/,/g, ''),
+                    descripcion_rut: data.nombre_cliente
+                },
+                consecutivo: data.numero_fact.trim(),
+                agencia: form.agencia,
+                fecha: data.fecha_factura,
+                descrip_forma_pago: data.forma_pago,
+                observaciones: data.observaciones,
+                total_rem: data.total_rem,
+                elaboro: form.elaboro,
+
+                detalle: data.productos.map(e => {
+
+                    e.producto = {
+                        base1_pr: e.base1_pr,
+                        base2_pr: e.base2_pr,
+                        base3_pr: e.base3_pr,
+                        base4_pr: e.base4_pr,
+                        base5_pr: e.base5_pr,
+                    }
+
+                    e.cantidad = e.cantidad.trim()
+                    e.valorUnitario = e.vlr_unit.trim()
+                    e.total = e.vlr_subtotal.trim()
+
+                    return e
+                })
+            }
+        },
+
+        order_data_save(state, { form }) {
+            let detalle = {}
+            let info = state.rootGetters['middleware/get_info'] || {}
+
+            let date = current_date().split("/").reverse().join("")
+
+            let data_send = `${form.agencia}|REMI|${form.consecutivo}|${date}|${form.cliente?.identificacion_rut}|${form.formaPago}|${form.diasPlazo}|${form.medioPago}|${form.observaciones}|0|`
+
+            form.detalle?.forEach((k, v) => {
+
+                let index = v + 1;
+                let name = `DATOJ-${String(index).padStart(3, "0")}`
+                let codigo = k.producto.codigopr_list.trim()
+                let cantidad = parseFloat(k.cantidad).toFixed(2)
+                let vlr_unit = parseFloat(k.valorUnitario).toFixed(2)
+                let descuento = "0.00"
+                let iva = "0.00"
+                let presentacion = k.presentacion
+                let ubicaperfil_empr = state.rootState.setting.data?.ubicaperfil_empr
+
+                detalle[name] = `${codigo}|${cantidad}|${vlr_unit}|${descuento}|${iva}|${presentacion}|${ubicaperfil_empr}|`
+            })
+
+            return {
+                data: JSON.stringify({
+                    importarhtml: info.session + "|" + data_send,
+                    ...detalle,
+                }),
+                json: true,
+                url: state.rootGetters['setting/get_url']('save_referrals'),
+            }
         }
 
     }

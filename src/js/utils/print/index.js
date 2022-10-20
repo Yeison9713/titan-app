@@ -38,15 +38,18 @@ const imprimir = ({ data = {}, formato = '', nit = 0 }) => {
 
             const pdf = pdfMake.createPdf(dd);
 
-            pdf.getBase64(data => {
-                console.log("DATA", data);
-                resolve(data);
-            });
+            if (window.Capacitor) {
 
-            // pdfMake.createPdf(dd).open();
-            // resolve('')
+                pdf.getBase64(data => {
+                    console.log("DATA", data);
+                    resolve(data);
+                });
 
-            // return 'Impresion generada correctamente'
+            } else {
+                pdf.open();
+                resolve('')
+            }
+
         } catch (error) {
             console.log('Ocurrio un error generando la impresion: ' + error)
             reject(error)

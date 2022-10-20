@@ -26,7 +26,7 @@ export default {
                 let ip_service = state.rootState.setting?.ip_service || ""
 
                 let data = {
-                    data: { importarhtml: `${nit}|${user}|${password}|0|` },
+                    data: `${nit}|${user}|${password}|0|`,
                     url: state.rootGetters['setting/get_url']('login')
                 }
 
