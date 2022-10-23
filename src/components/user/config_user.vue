@@ -20,7 +20,10 @@
         <f7-list>
           <f7-list-item>
             <span>Online</span>
-            <f7-toggle v-model:checked="form.state_network"></f7-toggle>
+            <f7-toggle
+              v-model:checked="form.state_network"
+              :disabled="true"
+            ></f7-toggle>
           </f7-list-item>
 
           <f7-list-input
@@ -136,7 +139,7 @@ export default {
     return {
       form: {
         state_network: true,
-        prefijo: null,
+        prefijo: "REMI",
         numero: null,
         ubicacion: {
           codigo: null,
@@ -164,11 +167,26 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({ data_config: "user/get_data_config" }),
+    ...mapGetters({
+      data_config: "user/get_data_config",
+      setting: "setting/get_data",
+      agencies: "agencies/get_list",
+    }),
   },
   watch: {
     data_config: function (val) {
       this.form = { ...val };
+    },
+    setting: function (val) {
+      let { form } = this;
+
+      let agencie = this.agencies.find(
+        (e) => e.codigo_agc == val.ptoperfil_empr
+      );
+
+      form.ubicacion.codigo = val.ubicaperfil_empr;
+      form.agencia.codigo = val.ptoperfil_empr;
+      form.agencia.nombre = agencie?.descripcion_agc || "";
     },
   },
 
@@ -203,7 +221,7 @@ export default {
           toast("Proceso terminado correctamente");
           this.close();
           setTimeout(() => {
-            location.reload()
+            location.reload();
           }, 500);
         } catch (error) {
           loader(false);

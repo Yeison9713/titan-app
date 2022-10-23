@@ -198,6 +198,7 @@
             </ul>
           </div>
         </f7-list-item>
+
         <f7-list-item title="Cierre de remisión" group-title />
 
         <!-- cajitas.............................................. -->
@@ -250,6 +251,49 @@
             </f7-col>
           </f7-row>
         </f7-list-item-row>
+
+        <f7-list-item-row>
+          <f7-row no-gap :style="{ width: '100%' }">
+            <f7-col>
+              <f7-list-input
+                label="Valor efectivo"
+                type="text"
+                floating-label
+                error-message="Campo obligatorio"
+                required
+                outline
+                v-model:value="form.efectivo"
+              >
+              </f7-list-input>
+            </f7-col>
+
+            <f7-col>
+              <f7-list-input
+                label="Valor transferencia"
+                type="text"
+                floating-label
+                error-message="Campo obligatorio"
+                required
+                outline
+                v-model:value="form.transferencia"
+              >
+              </f7-list-input>
+            </f7-col>
+          </f7-row>
+        </f7-list-item-row>
+
+        <f7-list-input
+          label="Banco transferencia"
+          type="select"
+          floating-label
+          outline
+          v-model:value="form.bancoTransferencia"
+        >
+          <option value="1">Banco 1</option>
+          <option value="2">Banco 2</option>
+          <option value="3">Banco 3</option>
+        </f7-list-input>
+
         <f7-list-input
           label="Observaciones"
           type="textarea"
@@ -361,6 +405,9 @@ export default {
         formaPago: 1,
         diasPlazo: 0,
         medioPago: 10,
+        efectivo: null,
+        transferencia: null,
+        bancoTransferencia: null,
         observaciones: null,
         total_rem: 0,
       };

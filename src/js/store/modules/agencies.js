@@ -26,10 +26,6 @@ export default {
                     url: state.rootGetters['setting/get_url']('agencies'),
                 }
 
-                let config_user = state.rootGetters['user/get_data_config']
-
-                if (!config_user.state_network) return resolve();
-
                 request_titan({ url: ip_service, data })
                     .then(async (res) => {
                         try {

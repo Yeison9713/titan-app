@@ -7,6 +7,68 @@
       }"
     >
       <f7-list form class="reimpresion_remision">
+        <f7-list-item title="Consultar remisiones" group-title />
+
+        <f7-list-input
+          label="Punto de remisión"
+          type="text"
+          floating-label
+          error-message="Campo obligatorio"
+          required
+          outline
+          v-model:value="form.agencia.descripcion"
+          :disabled="true"
+        >
+        </f7-list-input>
+
+        <f7-list-item-row>
+          <f7-row no-gap>
+            <f7-col>
+              <f7-list-input
+                label="Fecha inicial"
+                type="date"
+                outline
+                floating-label
+                v-model:value="form.fecha_ini"
+              >
+              </f7-list-input>
+            </f7-col>
+            <f7-col>
+              <f7-list-input
+                label="Fecha final"
+                type="date"
+                outline
+                floating-label
+                v-model:value="form.fecha_fin"
+              >
+              </f7-list-input>
+            </f7-col>
+          </f7-row>
+        </f7-list-item-row>
+
+        <f7-list-item>
+          <f7-button
+            large
+            color="green"
+            fill
+            :style="{
+              width: '100%',
+            }"
+            @click="query_referrals"
+          >
+            Consultar
+          </f7-button>
+        </f7-list-item>
+      </f7-list>
+    </f7-card>
+
+    <f7-card
+      :style="{
+        padding: '10px',
+      }"
+      v-if="detalle.length"
+    >
+      <f7-list form class="reimpresion_remision">
         <f7-list-item title="Listado de remisiones" group-title />
 
         <f7-list-item>
@@ -28,7 +90,7 @@
                           class="item-title"
                           :style="{ 'font-size': '12px' }"
                         >
-                          <b>{{ item.cliente?.descripcion_rut }}</b>
+                          <b>{{ item.cliente_fact }}</b>
                         </div>
                       </f7-col>
                       <f7-col
@@ -36,7 +98,7 @@
                         class="text-align-right"
                         :style="{ 'font-size': '12px' }"
                       >
-                        Fact. {{ format_num(item.consecutivo) }}
+                        Fact. {{ format_num(item.numero_fact) }}
                       </f7-col>
                     </f7-row>
                   </div>
@@ -56,23 +118,23 @@
                   <div class="block">
                     <f7-row>
                       <f7-col width="100">
+                        <b>Prefijo:</b>
+                        {{ item.pref_fact }}
+                      </f7-col>
+
+                      <f7-col width="100">
                         <b>Fecha:</b>
-                        {{ item.fecha }}
+                        {{ item.fecha_fact }}
                       </f7-col>
 
                       <f7-col width="100">
                         <b>Forma de pago:</b>
-                        {{ textValue("formaPago", item.formaPago) }}
+                        {{ item.formapago_fact }}
                       </f7-col>
 
                       <f7-col width="100">
-                        <b>Medio de pago:</b>
-                        {{ textValue("medioPago", item.medioPago) }}
-                      </f7-col>
-
-                      <f7-col width="100">
-                        <b>Observaciones:</b>
-                        {{ item.observaciones }}
+                        <b>Valor fact:</b>
+                        {{ item.valor_fact }}
                       </f7-col>
                     </f7-row>
                   </div>
@@ -88,7 +150,7 @@
 
 <script>
 import { format_num } from "../../js/utils/plugins";
-import { formaPago, medioPago, textValue } from "../../js/utils/global";
+import { current_date } from "../../js/utils/global";
 
 import { imprimir } from "../../js/utils/print";
 import { mapGetters } from "vuex";
@@ -97,51 +159,82 @@ import _ from "lodash";
 export default {
   data() {
     return {
-      formaPago,
-      medioPago,
+      form: {
+        agencia: {
+          codigo: null,
+          descripcion: null,
+        },
+        fecha_ini: current_date().split("/").reverse().join("-"),
+        fecha_fin: current_date().split("/").reverse().join("-"),
+      },
     };
   },
   async created() {
-    // console.log(cordova ? "no exists" : "a");
     let dispatch = this.$store.dispatch;
 
+    await dispatch("user/query_data_config");
+    await dispatch("agencies/download");
     await dispatch("remisiones/query_list");
     await dispatch("setting/query_data");
   },
   computed: {
     ...mapGetters({
-      detalle: "remisiones/get_list",
+      data_config: "user/get_data_config",
+      // detalle: "remisiones/get_list",
+      detalle: "remisiones/get_referrals",
       info_user: "middleware/get_info",
     }),
   },
+  watch: {
+    data_config: function (val) {
+      let { form } = this;
+      let nombre = `${val.agencia.codigo} - ${val.agencia.nombre}`;
+
+      form.agencia.codigo = val.agencia.codigo;
+      form.agencia.descripcion = nombre;
+    },
+  },
   methods: {
     format_num,
-    textValue,
-    print_pdf(item) {
-      let datos = {
-        ...item,
-        descrip_forma_pago: this.textValue("formaPago", item.formaPago),
-      };
+
+    async query_referrals() {
+      let dispatch = this.$store.dispatch;
+
+      await dispatch("remisiones/query_referrals", this.form);
+    },
+    async print_pdf(item) {
+      let dispatch = this.$store.dispatch;
+
+      let data = `${item.agencia_fact}|${item.pref_fact}|${
+        item.numero_fact
+      }|${item.fecha_fact.substr(0, 4)}|`;
+
+      const response = await dispatch("remisiones/post_print", data);
+
+      const order_data = await dispatch("remisiones/order_data_print", {
+        data: response.message[0],
+      });
 
       try {
         imprimir({
-          data: _.cloneDeep(datos),
+          data: _.cloneDeep(order_data),
           formato: "remision_pos",
-          nit: 1014185545,
         })
           .then((base64) => {
-            window.plugins.PrintPDF.print({
-              data: base64,
-              type: "Data",
-              title: "test print",
-              success: function () {
-                console.log("success");
-              },
-              error: function (data) {
-                data = JSON.parse(Data);
-                console.log("failed" + data.error);
-              },
-            });
+            if (window.Capacitor) {
+              window.plugins.PrintPDF.print({
+                data: base64,
+                type: "Data",
+                title: "test print",
+                success: function () {
+                  console.log("success");
+                },
+                error: function (data) {
+                  data = JSON.parse(Data);
+                  console.log("failed" + data.error);
+                },
+              });
+            }
           })
           .catch((err) => {
             console.log(err);

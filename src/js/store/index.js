@@ -9,6 +9,7 @@ import customers from './modules/customers'
 import cities from './modules/cities';
 import remisiones from './modules/remisiones';
 import agencies from './modules/agencies';
+import cartera from './modules/cartera';
 
 export const store = createStore({
   modules: {
@@ -20,6 +21,7 @@ export const store = createStore({
     customers,
     cities,
     agencies,
-    remisiones
+    remisiones,
+    cartera
   }
 })

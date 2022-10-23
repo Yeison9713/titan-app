@@ -8,7 +8,8 @@ export default {
     namespaced: true,
     state: {
         list: [],
-        consecutive: {}
+        consecutive: {},
+        all_referrals: {}
     },
     getters: {
         get_list: (state) => {
@@ -16,6 +17,9 @@ export default {
         },
         get_consecutive: (state) => {
             return state.consecutive
+        },
+        get_referrals: (state) => {
+            return state.all_referrals
         }
     },
     mutations: {
@@ -24,6 +28,9 @@ export default {
         },
         set_consecutive(state, data) {
             state.consecutive = data
+        },
+        set_referrals(state, data) {
+            state.all_referrals = data
         }
     },
     actions: {
@@ -171,12 +178,12 @@ export default {
                     descripcion_rut: data.nombre_cliente
                 },
                 consecutivo: data.numero_fact.trim(),
-                agencia: form.agencia,
+                // agencia: form.agencia,
                 fecha: data.fecha_factura,
                 descrip_forma_pago: data.forma_pago,
                 observaciones: data.observaciones,
                 total_rem: data.total_rem,
-                elaboro: form.elaboro,
+                elaboro: data.elaboro,
 
                 detalle: data.productos.map(e => {
 
@@ -228,7 +235,28 @@ export default {
                 json: true,
                 url: state.rootGetters['setting/get_url']('save_referrals'),
             }
-        }
+        },
 
+        query_referrals(state, form = {}) {
+            return new Promise((resolve, reject) => {
+                let info = state.rootGetters['middleware/get_info'] || {}
+                let ip_service = state.rootState.setting?.ip_service || ""
+
+                let fecha_ini = form.fecha_ini.replaceAll("-", "")
+                let fecha_fin = form.fecha_fin.replaceAll("-", "")
+
+                let data = {
+                    data: info.session + `|${form?.agencia?.codigo}|0|${fecha_ini}|${fecha_fin}|`,
+                    url: state.rootGetters['setting/get_url']('all_referrals'),
+                }
+
+                request_titan({ url: ip_service, data })
+                    .then((res) => {
+                        state.commit("set_referrals", res.message.reverse())
+                    }).catch(reject)
+
+                resolve();
+            })
+        }
     }
 }

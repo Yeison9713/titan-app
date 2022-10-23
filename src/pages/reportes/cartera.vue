@@ -22,7 +22,7 @@
           type="text"
           error-message="Campo obligatorio"
           required
-          v-model:value="form.agencia"
+          v-model:value="form.agencia.descripcion"
           :disabled="true"
         ></f7-list-input>
 
@@ -33,8 +33,9 @@
             closeOnSelect: true,
             setValueText: false,
           }"
+          :after="textValue('rut_procedure', form.type_proccess)"
         >
-          <select name="rut_procedure">
+          <select name="rut_procedure" v-model="form.type_proccess">
             <option
               v-for="item in rut_procedure"
               :key="item.value"
@@ -52,8 +53,17 @@
             closeOnSelect: true,
             setValueText: false,
           }"
+          :after="
+            textValue(
+              'customers',
+              form.customer,
+              'identificacion_rut',
+              'descripcion_rut'
+            )
+          "
+          v-if="form.type_proccess == 2 ? true : false"
         >
-          <select name="customers">
+          <select name="customers" v-model="form.customer">
             <option
               v-for="item in customers"
               :key="item.identificacion_rut"
@@ -64,34 +74,17 @@
           </select>
         </f7-list-item>
 
-        <f7-list-item
-          title="Asesor a procesar"
-          smart-select
-          :disabled="true"
-          :smart-select-params="{
-            closeOnSelect: true,
-            setValueText: false,
-          }"
-        >
-          <select name="assessor_procedure">
-            <option
-              v-for="item in assessor_procedure"
-              :key="item.value"
-              :value="item.value"
-            >
-              {{ item.text }}
-            </option>
-          </select>
-        </f7-list-item>
-
         <f7-list-input
-          label="Fecha de corte"
-          type="datepicker"
-          readonly
-        ></f7-list-input>
+          label="Fecha corte"
+          type="date"
+          outline
+          floating-label
+          v-model:value="form.fecha_corte"
+        >
+        </f7-list-input>
 
         <f7-list-item>
-          <f7-button color="" class="width-100" large outline
+          <f7-button color="" class="width-100" large outline @click="consultar"
             >Consultar</f7-button
           >
         </f7-list-item>
@@ -118,6 +111,7 @@
 <script>
 import { mapGetters } from "vuex";
 import popup_report from "../../components/user/popup_report.vue";
+import { current_date } from "../../js/utils/global";
 export default {
   components: {
     popup_report,
@@ -137,20 +131,51 @@ export default {
         { value: 2, text: "Selecion unica" },
       ],
       form: {
-        agencia: "00002 - Ruta 1",
+        agencia: {
+          codigo: null,
+          descripcion: null,
+        },
+        fecha_corte: current_date().split("/").reverse().join("-"),
+        type_proccess: 1,
+        customer: null,
       },
     };
   },
   computed: {
     ...mapGetters({
+      data_config: "user/get_data_config",
       customers: "customers/get_list",
     }),
   },
+
+  watch: {
+    data_config: function (val) {
+      let { form } = this;
+      let nombre = `${val.agencia.codigo} - ${val.agencia.nombre}`;
+
+      form.agencia.codigo = val.agencia.codigo;
+      form.agencia.descripcion = nombre;
+    },
+  },
   async created() {
     let dispatch = this.$store.dispatch;
+
+    await dispatch("user/query_data_config");
     await dispatch("customers/query_list");
   },
+
   methods: {
+    consultar() {
+      let dispatch = this.$store.dispatch;
+
+      let data = {
+        agencia: this.form.agencia.codigo,
+        rut: this.form.type_proccess == 1 ? 0 : this.form.customer,
+        fecha: this.form.fecha_corte.replaceAll("-", ""),
+      };
+
+      dispatch("cartera/post_informe", data);
+    },
     capitalize(str = "") {
       const array = str.toLowerCase().split(" ");
 
@@ -159,6 +184,12 @@ export default {
       }
 
       return array.join(" ");
+    },
+    textValue(obj, id, field = "value", resolve = "text") {
+      let retornar = this[obj]?.find((e) => e[field] == id);
+
+      if (!retornar || retornar?.text) return retornar?.text || "";
+      else return retornar[resolve] || "";
     },
   },
 };

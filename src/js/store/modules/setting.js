@@ -23,7 +23,8 @@ export default {
             consecutive: "financiero/dlls/PrConsecutivoJ.dll",
             save_referrals: "Ptovta/dlls/PrRemision03.dll",
             print_referrals: "Ptovta/dlls/PrRemision01J.dll",
-            all_referrals: "Ptovta/dlls/PrRemision02J.dll"
+            all_referrals: "Ptovta/dlls/PrRemision02J.dll",
+            cartera: "Ptovta/dlls/RpCartRemJ.DLL"
         },
         data: {},
         menu_user: []

@@ -15,7 +15,7 @@
       </f7-nav-title>
     </f7-navbar>
 
-    <f7-card>
+    <f7-card v-if="false">
       <f7-card-content class="padding-half">
         <f7-row>
           <f7-col>
@@ -107,61 +107,61 @@ export default {
           popup: "popup_config",
         },
 
-        {
-          id: "setting",
-          text: "Configuracion",
-          footer: "Falta sincronizar dispositivo",
-        },
-        {
-          id: "products",
-          text: "Productos",
-          footer: null,
+        // {
+        //   id: "setting",
+        //   text: "Configuracion",
+        //   footer: "Falta sincronizar dispositivo",
+        // },
+        // {
+        //   id: "products",
+        //   text: "Productos",
+        //   footer: null,
 
-          // data popup
-          popup: "popup_lookup",
-          getter: "products/get_list",
-          columns: {
-            value: ["codigo_list", "codigopr_list"],
-            text: "descripcionpr_list",
-          },
-        },
-        {
-          id: "presentations",
-          text: "Presentaciones",
-          footer: null,
+        //   // data popup
+        //   popup: "popup_lookup",
+        //   getter: "products/get_list",
+        //   columns: {
+        //     value: ["codigo_list", "codigopr_list"],
+        //     text: "descripcionpr_list",
+        //   },
+        // },
+        // {
+        //   id: "presentations",
+        //   text: "Presentaciones",
+        //   footer: null,
 
-          // data popup
-          popup: "popup_lookup",
-          getter: "presentations/get_list",
-          columns: {
-            value: ["codigo_rep"],
-            text: "descripcion_rep",
-          },
-        },
-        {
-          id: "customers",
-          text: "Clientes",
-          footer: null,
-          // data popup
-          popup: "popup_lookup",
-          getter: "customers/get_list",
-          columns: {
-            value: ["identificacion_rut"],
-            text: "descripcion_rut",
-          },
-        },
-        {
-          id: "cities",
-          text: "Ciudades",
-          footer: null,
-          // data popup
-          popup: "popup_lookup",
-          getter: "cities/get_list",
-          columns: {
-            value: ["c_digo_dane_del_municipio"],
-            text: "municipio",
-          },
-        },
+        //   // data popup
+        //   popup: "popup_lookup",
+        //   getter: "presentations/get_list",
+        //   columns: {
+        //     value: ["codigo_rep"],
+        //     text: "descripcion_rep",
+        //   },
+        // },
+        // {
+        //   id: "customers",
+        //   text: "Clientes",
+        //   footer: null,
+        //   // data popup
+        //   popup: "popup_lookup",
+        //   getter: "customers/get_list",
+        //   columns: {
+        //     value: ["identificacion_rut"],
+        //     text: "descripcion_rut",
+        //   },
+        // },
+        // {
+        //   id: "cities",
+        //   text: "Ciudades",
+        //   footer: null,
+        //   // data popup
+        //   popup: "popup_lookup",
+        //   getter: "cities/get_list",
+        //   columns: {
+        //     value: ["c_digo_dane_del_municipio"],
+        //     text: "municipio",
+        //   },
+        // },
       ],
     };
   },
@@ -212,11 +212,12 @@ export default {
     let dispatch = this.$store.dispatch;
 
     await dispatch("user/query_data_config");
-    await dispatch("setting/query_data");
-    await dispatch("products/query_list");
-    await dispatch("presentations/query_list");
-    await dispatch("customers/query_list");
-    await dispatch("cities/query_list");
+    await dispatch("agencies/download");
+    await dispatch("setting/query_data", true);
+    // await dispatch("products/query_list");
+    // await dispatch("presentations/query_list");
+    // await dispatch("customers/query_list");
+    // await dispatch("cities/query_list");
   },
 
   methods: {
