@@ -26,8 +26,8 @@ export default {
 
                 request_titan({ url: ip_service, data })
                     .then(res => {
-                        console.log(res)
-                        state.commit('set_data', res.message)
+                        state.commit('set_data', res.message.filter(e => e.id_rep != ""))
+                        resolve()
                     }).catch(reject)
             })
         }

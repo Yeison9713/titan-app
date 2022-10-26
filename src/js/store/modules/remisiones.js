@@ -210,7 +210,11 @@ export default {
 
             let date = current_date().split("/").reverse().join("")
 
-            let data_send = `${form.agencia}|REMI|${form.consecutivo}|${date}|${form.cliente?.identificacion_rut}|${form.formaPago}|${form.diasPlazo}|${form.medioPago}|${form.observaciones}|0|`
+            let efectivo = form.efectivo || 0
+            let transferencia = form.transferencia || 0
+            let banco = form.bancoTransferencia
+
+            let data_send = `${form.agencia}|REMI|${form.consecutivo}|${date}|${form.cliente?.identificacion_rut}|${form.formaPago}|${form.diasPlazo}|${form.medioPago}|${form.observaciones}|0|${efectivo}|${transferencia}|${banco}`
 
             form.detalle?.forEach((k, v) => {
 

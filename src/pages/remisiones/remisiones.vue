@@ -289,9 +289,9 @@
           outline
           v-model:value="form.bancoTransferencia"
         >
-          <option value="1">Banco 1</option>
-          <option value="2">Banco 2</option>
-          <option value="3">Banco 3</option>
+          <option value="01">Banco de Bogotá</option>
+          <option value="07">Bancolombia</option>
+          <option value="51">Davivienda</option>
         </f7-list-input>
 
         <f7-list-input
@@ -466,6 +466,9 @@ export default {
         else if (!form.formaPago) toast("Selecione la forma de pago");
         else if (form.formaPago != 2 && !form.medioPago)
           toast("Selecione un medio de pago");
+        else if (!form.efectivo && !form.transferencia)
+          toast("Ingrese un valor de efectivo o transferencia");
+        else if (!form.bancoTransferencia) toast("Selecione un banco");
         else {
           let loader_src = loader(true);
           loader_src.setTitle(`Guardando remisión...`);
@@ -474,10 +477,6 @@ export default {
           let datos = {
             ...form,
             detalle,
-            elaboro: {
-              fecha: new Date().getTime(),
-              operador: this.info_user.user,
-            },
           };
 
           const response = await this.save_remision(_.cloneDeep(datos));
@@ -499,7 +498,11 @@ export default {
         try {
           let datos = {
             ...data,
-            descrip_forma_pago: this.textValue("formaPago", data.formaPago),
+            // descrip_forma_pago: this.textValue("formaPago", data.formaPago),
+            elaboro: {
+              fecha: new Date().getTime(),
+              operador: this.info_user.user,
+            },
           };
 
           imprimir({ data: _.cloneDeep(datos), formato: "remision_pos" })

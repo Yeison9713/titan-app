@@ -45,20 +45,9 @@ export const menu_user = [
         submenu: [
             {
                 id: 21,
-                name: "Inventarios",
-                submenu: [
-                    {
-                        id: 211,
-                        name: 'Saldo inventarios',
-                        link: 'reporte/inventarios'
-                    }
-                ]
-            },
-            {
-                id: 22,
                 name: "Cartera",
                 link: '/reporte/cartera/'
-            }
+            },
         ]
     },
     {

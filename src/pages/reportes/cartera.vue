@@ -110,8 +110,9 @@
 
 <script>
 import { mapGetters } from "vuex";
-import popup_report from "../../components/user/popup_report.vue";
+import popup_report from "../../components/user/cartera/popup_report.vue";
 import { current_date } from "../../js/utils/global";
+import { loader } from "../../js/utils/plugins";
 export default {
   components: {
     popup_report,
@@ -120,7 +121,9 @@ export default {
     return {
       popup_report: {
         estado: false,
-        params: {},
+        params: {
+          data: [],
+        },
       },
       rut_procedure: [
         { value: 1, text: "Todo los ruts" },
@@ -145,6 +148,7 @@ export default {
     ...mapGetters({
       data_config: "user/get_data_config",
       customers: "customers/get_list",
+      cartera: "cartera/get_list",
     }),
   },
 
@@ -155,6 +159,9 @@ export default {
 
       form.agencia.codigo = val.agencia.codigo;
       form.agencia.descripcion = nombre;
+    },
+    cartera: function (val) {
+      this.popup_report.params.data = val;
     },
   },
   async created() {
@@ -174,7 +181,9 @@ export default {
         fecha: this.form.fecha_corte.replaceAll("-", ""),
       };
 
+      loader(true);
       dispatch("cartera/post_informe", data);
+      setTimeout(() => loader(false), 750);
     },
     capitalize(str = "") {
       const array = str.toLowerCase().split(" ");

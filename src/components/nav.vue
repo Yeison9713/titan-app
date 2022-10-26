@@ -45,7 +45,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { format_num } from "../js/utils/plugins";
 
 export default {
   props: {
@@ -74,7 +73,6 @@ export default {
   },
 
   methods: {
-    format_num,
     acronym(data = "") {
       return data.match(/\b([A-Z])/g).join("");
     },
