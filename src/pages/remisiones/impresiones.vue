@@ -57,7 +57,7 @@
           >
         </f7-list-item>
 
-        <f7-list-item>
+        <!-- <f7-list-item>
           <f7-button
             color="teal"
             class="width-100"
@@ -66,7 +66,7 @@
             @click="popup_report.estado = true"
             >Ver remisiones</f7-button
           >
-        </f7-list-item>
+        </f7-list-item> -->
       </f7-list>
     </f7-card>
     <popup_report
@@ -138,7 +138,8 @@ export default {
       let dispatch = this.$store.dispatch;
       loader(true);
       await dispatch("remisiones/query_referrals", this.form);
-      setTimeout(() => loader(false), 750);
+      await setTimeout(() => loader(false), 750);
+      this.popup_report.estado = true;
     },
   },
 };

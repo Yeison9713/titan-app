@@ -16,24 +16,16 @@
             <div
               :style="{
                 backgroundImage: `url(${form.logo})`,
-                backgroundSize: '90%',
+                backgroundSize: '100%',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
               }"
             ></div>
           </f7-list-item>
 
-          <f7-list-item class="display-flex justify-content-center">
-            <span
-              :style="{ 'text-transform': 'uppercase', 'font-weight': '500' }"
-            >
-              Titan remisiones
-            </span>
-          </f7-list-item>
-
           <f7-list-input
             label="Empresa"
-            type="text"
+            type="number"
             floating-label
             error-message="Campo obligatorio"
             required
@@ -48,7 +40,7 @@
 
           <f7-list-input
             label="Usuario"
-            type="text"
+            type="number"
             floating-label
             error-message="Campo obligatorio"
             required
@@ -153,7 +145,7 @@ export default {
     const show_pass = ref(false);
 
     const form = reactive({
-      logo: null,
+      logo: "https://www.titansoluciones.net/img/logo_app.png",
       company: null,
       user: null,
       password: null,
@@ -173,15 +165,15 @@ export default {
       version: null,
     });
 
-    watch(
-      () => store.getters["setting/get_data"],
-      (val) => {
-        let nit = parseFloat(val?.id_empr) || 0;
-        form.logo = `https://www.titansoluciones.net/img/${nit}.png`;
-        form.company = nit;
-      },
-      { deep: true }
-    );
+    // watch(
+    //   () => store.getters["setting/get_data"],
+    //   (val) => {
+    //     let nit = parseFloat(val?.id_empr) || "";
+    //     form.logo = `https://www.titansoluciones.net/img/${nit}.png`;
+    //     form.company = nit;
+    //   },
+    //   { deep: true }
+    // );
 
     const validate_login = () => {
       if (!form.company) errores.company = true;
@@ -236,21 +228,21 @@ export default {
   .page-content
     width: 90%
 
-#logo
-  display: flex
-  justify-content: space-around
-  align-items: center
+  #logo
+    display: flex
+    justify-content: space-around
+    align-items: center
 
-  .item-inner
-    flex-direction: column
-    padding: 0
+    .item-inner
+      flex-direction: column
+      padding: 0
 
-  div
-    width: 100px
-    height: 100px
+    div
+      width: 200px !important
+      height: 90px !important
 
-  .item-content
-    padding: 0
+    .item-content
+      padding: 0
 
 .input-login > .item-content > .item-media
   padding: 3px 0 0 0 !important

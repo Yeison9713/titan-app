@@ -43,6 +43,7 @@
               floating-label
               outline
               v-model:value="form.presentacion"
+              @change="calcularVlrUnitario"
             >
               <option
                 v-for="(item, index) in presentaciones"
@@ -196,23 +197,32 @@ export default {
         this.form.producto = item;
         this.form.valorUnitario = valorUnitario;
         this.form.cantidad = 1;
+        this.form.presentacion = "";
 
         this.modalItem.state = false;
       }
     },
-    calcularTotal() {
-      const { cantidad, valorUnitario, presentacion } = this.form;
+    calcularVlrUnitario() {
+      const { presentacion } = this.form;
+      const { baseproducto_list } = this.form.producto;
+
+      let valorUnitario = parseFloat(baseproducto_list.replace(/\,/g, "")) || 0;
 
       let obj_presentation = this.presentaciones.find(
         (e) => e.codigo_rep == presentacion
       );
 
       let cant_rep = parseFloat(obj_presentation?.cantidad_rep) || 1;
+      this.form.valorUnitario = parseFloat(cant_rep * valorUnitario).toFixed(0);
+      this.calcularTotal();
+    },
+    calcularTotal() {
+      const { cantidad, valorUnitario } = this.form;
 
       const valorCantidad = parseFloat(cantidad) || 0;
       const unitario = parseFloat(valorUnitario) || 0;
 
-      const total = cant_rep * valorCantidad * unitario;
+      const total = valorCantidad * unitario;
       this.form.total = parseFloat(total.toFixed(0));
     },
     init_form() {

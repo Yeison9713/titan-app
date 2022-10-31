@@ -169,7 +169,7 @@
                 </div>
               </li>
 
-              <li v-if="form.total_rem > 0">
+              <li v-if="form.total_rem">
                 <a class="item-content" href="#">
                   <div class="item-inner">
                     <f7-row
@@ -252,12 +252,12 @@
           </f7-row>
         </f7-list-item-row>
 
-        <f7-list-item-row>
+        <f7-list-item-row v-if="form.formaPago != '2'">
           <f7-row no-gap :style="{ width: '100%' }">
             <f7-col>
               <f7-list-input
                 label="Valor efectivo"
-                type="text"
+                type="number"
                 floating-label
                 error-message="Campo obligatorio"
                 required
@@ -270,7 +270,7 @@
             <f7-col>
               <f7-list-input
                 label="Valor transferencia"
-                type="text"
+                type="number"
                 floating-label
                 error-message="Campo obligatorio"
                 required
@@ -283,6 +283,7 @@
         </f7-list-item-row>
 
         <f7-list-input
+          v-if="form.formaPago != '2'"
           label="Banco transferencia"
           type="select"
           floating-label
@@ -385,6 +386,14 @@ export default {
       this.form.descrip_agencia = `${val?.agencia?.codigo} - ${val?.agencia?.nombre}`;
       this.form.consecutivo = val.agencia.consecutivo;
     },
+    "form.formaPago": function (val) {
+      if (val == 2) {
+        this.form.medioPago = "";
+        this.form.efectivo = "";
+        this.form.transferencia = "";
+        this.form.bancoTransferencia = "";
+      }
+    },
   },
   methods: {
     textValue,
@@ -433,9 +442,11 @@ export default {
     },
     put_total() {
       this.form.total_rem = 0;
+      this.form.efectivo = 0;
 
       this.detalle.forEach((e) => {
         this.form.total_rem += parseFloat(e.total);
+        this.form.efectivo += parseFloat(e.total);
       });
     },
     openAddItem() {
@@ -460,15 +471,26 @@ export default {
     async grabar() {
       try {
         let { form, detalle } = this;
+        let efectivo = parseFloat(form.efectivo) || 0;
+        let transferencia = parseFloat(form.transferencia) || 0;
+        let total_rem = parseFloat(form.total_rem) || 0;
+        let pago = efectivo + transferencia;
+
+        let formaPago = form.formaPago;
+
+        console.log(formaPago);
 
         if (!form.cliente) toast("Debe selecionar un cliente");
         else if (_.isEmpty(detalle)) toast("No se han agregado registros");
-        else if (!form.formaPago) toast("Selecione la forma de pago");
-        else if (form.formaPago != 2 && !form.medioPago)
+        else if (!formaPago) toast("Selecione la forma de pago");
+        else if (formaPago != 2 && !form.medioPago)
           toast("Selecione un medio de pago");
-        else if (!form.efectivo && !form.transferencia)
+        else if (formaPago != 2 && !form.efectivo && !form.transferencia)
           toast("Ingrese un valor de efectivo o transferencia");
-        else if (!form.bancoTransferencia) toast("Selecione un banco");
+        else if (formaPago != 2 && pago != total_rem)
+          toast("El valor de pago es diferente al total de la remision");
+        else if (formaPago != 2 && transferencia && !form.bancoTransferencia)
+          toast("Selecione un banco");
         else {
           let loader_src = loader(true);
           loader_src.setTitle(`Guardando remisión...`);

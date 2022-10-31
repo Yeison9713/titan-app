@@ -84,6 +84,25 @@
                       </div>
                     </div>
                   </li>
+                  <li v-if="!array.length">
+                    <a class="item-content" href="#">
+                      <div class="item-inner swipeout-content">
+                        <f7-row
+                          no-gap
+                          class="width-100 display-flex align-items-center"
+                        >
+                          <f7-col width="100">
+                            <div
+                              class="item-title"
+                              :style="{ 'font-size': '12px' }"
+                            >
+                              <b>No hay datos</b>
+                            </div>
+                          </f7-col>
+                        </f7-row>
+                      </div>
+                    </a>
+                  </li>
                 </ul>
               </div>
             </f7-list-item>
@@ -103,7 +122,9 @@ import { mapGetters } from "vuex";
 export default {
   props: {
     estado: Boolean,
-    params: Object,
+    params: {
+      data: [],
+    },
   },
   data() {
     return {
@@ -115,6 +136,11 @@ export default {
       },
     };
   },
+  watch: {
+    "params.data": function (val) {
+      this.array = this.params.data || [];
+    },
+  },
   computed: {
     ...mapGetters({
       info_user: "middleware/get_info",
@@ -123,7 +149,7 @@ export default {
   methods: {
     format_num,
     open() {
-      this.array = this.params.data || [];
+      // this.array = this.params.data || [];
     },
     closed() {
       this.$emit("closed", false);

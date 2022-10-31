@@ -212,9 +212,10 @@ export default {
 
             let efectivo = form.efectivo || 0
             let transferencia = form.transferencia || 0
-            let banco = form.bancoTransferencia
+            let banco = form.bancoTransferencia || ''
+            let observaciones = form.observaciones || ''
 
-            let data_send = `${form.agencia}|REMI|${form.consecutivo}|${date}|${form.cliente?.identificacion_rut}|${form.formaPago}|${form.diasPlazo}|${form.medioPago}|${form.observaciones}|0|${efectivo}|${transferencia}|${banco}`
+            let data_send = `${form.agencia}|REMI|${form.consecutivo}|${date}|${form.cliente?.identificacion_rut}|${form.formaPago}|${form.diasPlazo}|${form.medioPago}|${observaciones}|0|${efectivo}|${transferencia}|${banco}|`
 
             form.detalle?.forEach((k, v) => {
 
@@ -222,13 +223,13 @@ export default {
                 let name = `DATOJ-${String(index).padStart(3, "0")}`
                 let codigo = k.producto.codigopr_list.trim()
                 let cantidad = parseFloat(k.cantidad).toFixed(2)
-                let vlr_unit = parseFloat(k.valorUnitario).toFixed(2)
+                let total = String(k.total).replace(/,/g, "")
                 let descuento = "0.00"
                 let iva = "0.00"
                 let presentacion = k.presentacion
                 let ubicaperfil_empr = state.rootState.setting.data?.ubicaperfil_empr
 
-                detalle[name] = `${codigo}|${cantidad}|${vlr_unit}|${descuento}|${iva}|${presentacion}|${ubicaperfil_empr}|`
+                detalle[name] = `${codigo}|${cantidad}|${total}|${descuento}|${iva}|${presentacion}|${ubicaperfil_empr}|`
             })
 
             return {
@@ -256,7 +257,8 @@ export default {
 
                 request_titan({ url: ip_service, data })
                     .then((res) => {
-                        state.commit("set_referrals", res.message.reverse())
+                        state.commit("set_referrals", res.message.filter(e => e.agencia_fact != "").reverse())
+                        resolve()
                     }).catch(reject)
 
                 resolve();

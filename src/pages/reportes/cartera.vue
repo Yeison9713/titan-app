@@ -88,16 +88,6 @@
             >Consultar</f7-button
           >
         </f7-list-item>
-        <f7-list-item>
-          <f7-button
-            color="teal"
-            class="width-100"
-            large
-            outline
-            @click="popup_report.estado = true"
-            >Ver datos informe</f7-button
-          >
-        </f7-list-item>
       </f7-list>
     </f7-card>
     <popup_report
@@ -172,7 +162,7 @@ export default {
   },
 
   methods: {
-    consultar() {
+    async consultar() {
       let dispatch = this.$store.dispatch;
 
       let data = {
@@ -182,8 +172,9 @@ export default {
       };
 
       loader(true);
-      dispatch("cartera/post_informe", data);
-      setTimeout(() => loader(false), 750);
+      await dispatch("cartera/post_informe", data);
+      await setTimeout(() => loader(false), 750);
+      this.popup_report.estado = true;
     },
     capitalize(str = "") {
       const array = str.toLowerCase().split(" ");

@@ -100,6 +100,10 @@
               </f7-list>
             </f7-accordion-content>
           </f7-list-item>
+          <f7-list-item
+            v-if="!array.length"
+            title="No hay datos"
+          ></f7-list-item>
         </f7-list>
 
         <f7-list accordion-list v-if="totales.total">
@@ -156,11 +160,17 @@ export default {
       },
     };
   },
+  watch: {
+    "params.data": function (val) {
+      this.array = this.params.data || [];
+      this.calcularTotales();
+    },
+  },
   methods: {
     format_num,
     open() {
-      this.array = this.params.data || [];
-      this.calcularTotales();
+      // this.array = this.params.data || [];
+      // this.calcularTotales();
     },
     closed() {
       this.$emit("closed", false);

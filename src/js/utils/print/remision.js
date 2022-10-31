@@ -2,7 +2,7 @@ import { format_num } from '../plugins'
 
 var remision_pos = (data, logo) => {
     let width = 210;
-    var total = parseFloat(data.total_rem);
+    var total = parseFloat(data.total_rem.replace(/,/g, ''));
     var productos = [];
     let descripcion64 = "";
     let data_logo = logo ? { image: logo } : { text: '' }
@@ -38,9 +38,9 @@ var remision_pos = (data, logo) => {
                             alignment: "right",
                         },
                         {
-                            text: format_num(el.total),
+                            text: format_num(el.total.replace(/,/g, '')),
                             width: "30%",
-                            alignment: "center",
+                            alignment: "left",
                             margin: [15, 0, 0, 0],
                         },
                     ],
@@ -334,6 +334,9 @@ var remision_pos = (data, logo) => {
             //     ],
             //     margin: [0, 5, 0, 10],
             // },
+            {
+                text: `Observaciones: ${data.observaciones}`,
+            },
             {
                 text: `Atendido por: ${data.elaboro?.operador?.complete_names} \n\n\n\n\n`,
             },
