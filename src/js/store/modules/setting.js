@@ -24,7 +24,8 @@ export default {
             save_referrals: "Ptovta/dlls/PrRemision03.dll",
             print_referrals: "Ptovta/dlls/PrRemision01J.dll",
             all_referrals: "Ptovta/dlls/PrRemision02J.dll",
-            cartera: "Ptovta/dlls/RpCartRemJ.DLL"
+            cartera: "Ptovta/dlls/RpCartRemJ.DLL",
+            closeBox: "ptovta/dlls/PrPtocierreJ.dll"
         },
         data: {},
         menu_user: []

@@ -1,5 +1,6 @@
 import { f7 } from 'framework7-vue'
 import imask from 'imask'
+import { request_titan } from './request_titan.js'
 
 let toast = (text) => {
     f7.toast
@@ -58,19 +59,12 @@ let format_num = (val = 0, scale = 0) => {
     return `${mask.value}`
 }
 
-function getBase64(url) {
-    return new Promise((res) => {
-        var xhr = new XMLHttpRequest()
-        xhr.onload = function () {
-            var reader = new FileReader()
-            reader.onloadend = function () {
-                res(reader.result)
-            }
-            reader.readAsDataURL(xhr.response)
-        }
-        xhr.open('GET', url)
-        xhr.responseType = 'blob'
-        xhr.send()
+function getBase64(nit) {
+    return new Promise((resolve, reject) => {
+        let url = 'https://server1ts.net/Financiero/INC/imgbase64.php?file=' + nit + ".png"
+        request_titan({ url })
+            .then(resolve)
+            .catch(reject)
     })
 }
 
