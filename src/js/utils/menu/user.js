@@ -19,6 +19,16 @@ export const menu_user = [
                     },
                 ],
             },
+            {
+                id: 12,
+                name: "Pago clientes",
+                link: "/pago_clientes/index/",
+            },
+            {
+                id: 13,
+                name: "Gastos",
+                link: "/gastos/",
+            },
             // {
             //     id: 12,
             //     name: "Tesorería",
@@ -47,6 +57,11 @@ export const menu_user = [
                 id: 21,
                 name: "Cartera",
                 link: '/reporte/cartera/'
+            },
+            {
+                id: 22,
+                name: "Cierre caja",
+                link: '/caja/cierre/'
             },
         ]
     },

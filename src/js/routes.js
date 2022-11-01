@@ -10,6 +10,7 @@ import RemisionesImpresion from "../pages/remisiones/impresiones.vue"
 
 import ReporteCartera from "../pages/reportes/cartera.vue"
 
+import CierreCaja from '../pages/caja/cierre.vue'
 import ConfigRuts from "../pages/ruts/config.vue"
 import SyncApp from "../pages/user/syncApp.vue"
 
@@ -27,6 +28,7 @@ var routes = [
   securedRoute('/remisiones/imprimir/', RemisionesImpresion),
 
   securedRoute('/reporte/cartera/', ReporteCartera),
+  securedRoute('/caja/cierre/', CierreCaja),
   securedRoute('/ruts/config/', ConfigRuts),
 
   {

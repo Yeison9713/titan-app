@@ -10,6 +10,7 @@ import cities from './modules/cities';
 import remisiones from './modules/remisiones';
 import agencies from './modules/agencies';
 import cartera from './modules/cartera';
+import box from './modules/box';
 
 export const store = createStore({
   modules: {
@@ -22,6 +23,7 @@ export const store = createStore({
     cities,
     agencies,
     remisiones,
-    cartera
+    cartera,
+    box
   }
 })
