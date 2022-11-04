@@ -34,7 +34,7 @@ export default {
         }
     },
     actions: {
-        validate_consecutive(state) {
+        validate_consecutive(state, dato1 = '4') {
             return new Promise(async (resolve, reject) => {
                 try {
                     let config_user = state.rootGetters['user/get_data_config']
@@ -45,7 +45,7 @@ export default {
                         let agencies = state.rootGetters['agencies/get_list']
                         let agencie = agencies.find(e => parseFloat(e.codigo_agc) == parseFloat(config_user.agencia.codigo))
 
-                        await state.dispatch('query_consecutive', { agencie })
+                        await state.dispatch('query_consecutive', { agencie, dato1 })
                     }
 
                     resolve()
@@ -54,15 +54,21 @@ export default {
                 }
             })
         },
-        query_consecutive(state, { agencie }) {
+        query_consecutive(state, { agencie, dato1 } = {}) {
             return new Promise((resolve, reject) => {
                 try {
                     let info = state.rootGetters['middleware/get_info'] || {}
                     let ip_service = state.rootState.setting?.ip_service || ""
                     let date = current_date().split("/").reverse().join("")
 
+                    let data_consecutive = `|${dato1}|${agencie?.codigo_agc}|REM|0|${date}|01|`
+
+                    if (dato1 == '1') {
+                        data_consecutive = `|${dato1}|${agencie?.codigo_agc}|050|${date}|`
+                    }
+
                     let data = {
-                        data: info.session + `|4|${agencie?.codigo_agc}|REM|0|${date}|01|`,
+                        data: info.session + data_consecutive,
                         url: state.rootGetters['setting/get_url']('consecutive'),
                     }
 
@@ -263,6 +269,49 @@ export default {
 
                 resolve();
             })
-        }
+        },
+
+        pay_customer(state, { data_send, detalle }) {
+            return new Promise((resolve, reject) => {
+                let info = state.rootGetters['middleware/get_info'] || {}
+                let ip_service = state.rootState.setting?.ip_service || ""
+
+                let data = {
+                    data: JSON.stringify({
+                        importarhtml: info.session + data_send,
+                        ...detalle,
+                    }),
+                    url: state.rootGetters['setting/get_url']('pay_customer'),
+                    json: true,
+                }
+
+                request_titan({ url: ip_service, data })
+                    .then(resolve).catch(reject)
+
+            })
+        },
+
+        print_recaudo(state, send_data) {
+            return new Promise((resolve, reject) => {
+
+                try {
+                    let info = state.rootGetters['middleware/get_info'] || {}
+                    let ip_service = state.rootState.setting?.ip_service || ""
+
+                    let data = {
+                        data: info.session + `|${send_data.date}|${send_data.agencia}|050|${send_data.consecutivo}|`,
+                        url: state.rootGetters['setting/get_url']('print_recaudo'),
+                    }
+
+                    request_titan({ url: ip_service, data })
+                        .then(resolve)
+                        .catch(reject)
+
+                } catch (error) {
+                    reject(error)
+                }
+
+            })
+        },
     }
 }

@@ -3,13 +3,14 @@ import pdfFonts from '../print/vfs.js';
 pdfMake.vfs = pdfFonts;
 
 import { store } from '../../store/index'
-import { remision_pos } from './remision.js'
+import { remision_pos, recaudo_pos } from './remision.js'
 import { close_box } from './closeBox.js'
 import { getBase64 } from '../plugins'
 
 const print = {
     remision_pos,
-    close_box
+    recaudo_pos,
+    close_box,
 }
 
 const imprimir = ({ data = {}, formato = '', nit = 0 }) => {

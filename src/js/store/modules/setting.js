@@ -25,7 +25,9 @@ export default {
             print_referrals: "Ptovta/dlls/PrRemision01J.dll",
             all_referrals: "Ptovta/dlls/PrRemision02J.dll",
             cartera: "Ptovta/dlls/RpCartRemJ.DLL",
-            closeBox: "ptovta/dlls/PrPtocierreJ.dll"
+            closeBox: "ptovta/dlls/PrPtocierreJ.dll",
+            pay_customer: "Ptovta/dlls/PrRecaudo.dll",
+            print_recaudo: "Ptovta/dlls/PrReimpcbJV.dll"
         },
         data: {},
         menu_user: []
