@@ -10,7 +10,7 @@ export default {
     },
     getters: {
         get_list: (state) => {
-            return state.list.filter(e => !["", "003", "005"].includes(e.codigo_rep))
+            return state.list.filter(e => !["", "003"].includes(e.codigo_rep))
         }
     },
     mutations: {

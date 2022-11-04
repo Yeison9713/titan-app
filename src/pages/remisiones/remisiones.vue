@@ -527,7 +527,11 @@ export default {
             },
           };
 
-          imprimir({ data: _.cloneDeep(datos), formato: "remision_pos" })
+          imprimir({
+            data: _.cloneDeep(datos),
+            formato: "remision_pos",
+            nit: this.info_user.company.id,
+          })
             .then((base64) => {
               if (window.Capacitor) {
                 window.plugins.PrintPDF.print({
