@@ -22,12 +22,35 @@ export const menu_user = [
             {
                 id: 12,
                 name: "Pago clientes",
-                link: "/pago_clientes/index/",
+                submenu: [
+                    {
+                        id: 121,
+                        name: "Registrar",
+                        link: "/pago_clientes/index/",
+                    },
+                    // {
+                    //     id: 122,
+                    //     name: "Reimpresion",
+                    //     link: "/pago_clientes/reimprimir/",
+                    // }
+                ]
             },
             {
                 id: 13,
                 name: "Gastos",
-                link: "/gastos/",
+                // link: "/gastos/",
+                submenu: [
+                    {
+                        id: 121,
+                        name: "Registrar",
+                        link: "/gastos/index/",
+                    },
+                    // {
+                    //     id: 122,
+                    //     name: "Reimpresion",
+                    //     link: "/gastos/reimprimir/",
+                    // }
+                ]
             },
             // {
             //     id: 12,

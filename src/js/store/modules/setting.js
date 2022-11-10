@@ -27,10 +27,14 @@ export default {
             cartera: "Ptovta/dlls/RpCartRemJ.DLL",
             closeBox: "ptovta/dlls/PrPtocierreJ.dll",
             pay_customer: "Ptovta/dlls/PrRecaudo.dll",
-            print_recaudo: "Ptovta/dlls/PrReimpcbJV.dll"
+            print_recaudo: "Ptovta/dlls/PrReimpcbJV.dll",
+
+            concepts: "Financiero/dlls/CfconceptosJ.dll",
+            bills: "Ptovta/dlls/PREgresoM.dll",
+            print_bills: "Ptovta/dlls/PrReimpcbJV.DLL",
         },
         data: {},
-        menu_user: []
+        menu_user: [],
     },
 
     getters: {
@@ -106,5 +110,21 @@ export default {
                     }).catch(reject)
             })
         },
+
+        get_consecutive(state, data = {}) {
+            return new Promise((resolve, reject) => {
+                let info = state.rootGetters['middleware/get_info'] || {}
+                let ip_service = state.rootState.setting?.ip_service || ""
+
+                let send_data = {
+                    data: `${info.session}|${data}`,
+                    url: state.rootGetters['setting/get_url']('consecutive'),
+                }
+
+                request_titan({ url: ip_service, data: send_data })
+                    .then(resolve)
+                    .catch(reject)
+            })
+        }
     }
 }

@@ -11,6 +11,12 @@ import RemisionesImpresion from "../pages/remisiones/impresiones.vue"
 import ReporteCartera from "../pages/reportes/cartera.vue"
 
 import PagoClientes from '../pages/pagoClientes/index.vue'
+import ReImpresionPagoClientes from '../pages/pagoClientes/reImpresion.vue'
+
+
+import Gastos from "../pages/gastos/index.vue"
+import ReImpresionGastos from "../pages/gastos/reImpresion.vue"
+
 import CierreCaja from '../pages/caja/cierre.vue'
 
 import ConfigRuts from "../pages/ruts/config.vue"
@@ -30,7 +36,13 @@ var routes = [
   securedRoute('/remisiones/imprimir/', RemisionesImpresion),
 
   securedRoute('/reporte/cartera/', ReporteCartera),
+
   securedRoute('/pago_clientes/index/', PagoClientes),
+  securedRoute('/pago_clientes/reimprimir/', ReImpresionPagoClientes),
+  
+  securedRoute('/gastos/index/', Gastos),
+  securedRoute('/gastos/reimprimir/', ReImpresionGastos),
+
   securedRoute('/caja/cierre/', CierreCaja),
   securedRoute('/ruts/config/', ConfigRuts),
 

@@ -587,4 +587,219 @@ const recaudo_pos = (data, logo) => {
     };
 }
 
-export { remision_pos, recaudo_pos };
+const bills_pos = (data, logo) => {
+    let width = 210;
+
+    let efectivo = data.efectivo.replace(/,/g, '')
+    let transferencia = data.transferencia.replace(/,/g, '')
+    let total = parseFloat(efectivo) + parseFloat(transferencia)
+
+    let productos = [];
+    let data_logo = logo ? { image: logo } : { text: '' }
+
+    data.registros.forEach((el) => {
+        if (el.factura.trim()) {
+            productos.push({
+                margin: [0, 5, 0, 0],
+                columns: [
+                    {
+                        text: el.concepto,
+                        width: "55%",
+                        alignment: "left",
+                    },
+
+                    {
+                        text: el.factura,
+                        width: "15%",
+                        alignment: "right",
+                    },
+                    {
+                        text: format_num(el.valor.replace(/,/g, '')),
+                        width: "30%",
+                        alignment: "right",
+                        margin: [25, 0, 0, 0],
+                    },
+                ],
+
+            });
+        }
+    });
+
+    return {
+        pageSize: {
+            width,
+            height: "auto",
+        },
+        pageMargins: [10, 10, 10, 10],
+        defaultStyle: {
+            fontSize: 8,
+        },
+        styles: {
+            headers: {
+                margin: [0, 1],
+                alignment: "center",
+            },
+        },
+        content: [
+            {
+                stack: [
+                    {
+                        ...data_logo,
+                        width: 90,
+                        alignment: "center",
+                        bold: true,
+                    },
+                ],
+            },
+            {
+                text: [
+                    { text: `${data.descrip_empr}\n`, bold: true },
+                    `Nit. ${format_num(data.id_empr)}\n`,
+                    `Telefono:  ${data.telefono_empr ? data.telefono_empr.trim().replace(/\,/g, " ") : ''}\n`,
+                    `Telefóno Ruta 1:  322.248.9847 \n`,
+                    `Telefóno Ruta 2:  314.605.1977 \n`,
+
+                    `${data.direccion_empr}\n`,
+                    data.Ciudad,
+                ],
+                alignment: "center",
+            },
+            {
+                text: " ",
+                margin: [0, 5],
+                alignment: "center",
+                bold: true,
+            },
+            {
+                stack: [
+                    {
+                        text: `Comprobante de pago`,
+                        bold: true,
+                        style: "headers",
+                        fontSize: 10,
+                    },
+                    {
+                        text: `Nro. ${data.consecutivo}`,
+                        style: "headers",
+                    },
+                ],
+            },
+            {
+                stack: [
+                    {
+                        text: `Fecha: ${data.fecha.replace(/\s\s+/g, " ")}`,
+                        margin: [0, 1],
+                        alignment: "left",
+                    },
+                    {
+                        text: `Cliente: ${data.cliente}`,
+                        margin: [0, 1],
+                        alignment: "left",
+                        fontSize: 8,
+                    },
+                ],
+            },
+
+            {
+                canvas: [
+                    {
+                        type: "line",
+                        x1: 0,
+                        y1: 0,
+                        x2: width - 20,
+                        y2: 0,
+                        lineWidth: 0.5,
+                        dash: { length: 5, space: 2 },
+                    },
+                ],
+                margin: [0, 10, 0, 10],
+            },
+
+            {
+                columns: [
+                    {
+                        width: "55%",
+                        text: "Concepto",
+                        bold: true,
+                    },
+                    {
+                        width: "15%",
+                        text: "Factura",
+                        alignment: "right",
+                        bold: true,
+                    },
+                    {
+                        width: "30%",
+                        text: "Valor",
+                        alignment: "right",
+                        bold: true,
+                    },
+                ],
+            },
+            productos,
+            {
+                canvas: [
+                    {
+                        type: "line",
+                        x1: 0,
+                        y1: 0,
+                        x2: width - 20,
+                        y2: 0,
+                        lineWidth: 0.5,
+                        dash: { length: 5, space: 2 },
+                    },
+                ],
+                margin: [0, 10, 0, 10],
+            },
+            {
+                columns: [
+                    {
+                        width: "60%",
+                        text: "Total".toUpperCase(),
+                        bold: true,
+                        fontSize: 9,
+                    },
+                    {
+                        width: "40%",
+                        text: `$ ${format_num(total)}`,
+                        alignment: "center",
+                        bold: true,
+                        fontSize: 9,
+                    },
+                ],
+            },
+
+            {
+                canvas: [
+                    {
+                        type: "line",
+                        x1: 0,
+                        y1: 0,
+                        x2: width - 20,
+                        y2: 0,
+                        lineWidth: 0.5,
+                        dash: { length: 5, space: 2 },
+                    },
+                ],
+                margin: [0, 5, 0, 10],
+            },
+
+            {
+                text: `Observaciones: ${data.detallegral}`,
+            },
+            {
+                text: `Responsable: ${data.descrelabora} \n\n\n\n\n`,
+            },
+            // {
+            //     text: `Recibido: ________________________________ \n\n\n\n`,
+            // },
+
+            {
+                text: `Software: Titán Soluciones Sas \n\n.`,
+                alignment: "center",
+            },
+        ],
+    };
+}
+
+export { remision_pos, recaudo_pos, bills_pos };

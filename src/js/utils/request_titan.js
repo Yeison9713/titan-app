@@ -42,6 +42,7 @@ const request_titan = ({ url, data = {}, method = 'POST', header = {} }) => {
 
                 } catch (error) {
                     error_console('trycatch', error)
+                    reject()
                 }
             })
             .catch(error => {

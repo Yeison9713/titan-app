@@ -11,6 +11,8 @@ import remisiones from './modules/remisiones';
 import agencies from './modules/agencies';
 import cartera from './modules/cartera';
 import box from './modules/box';
+import concepts from './modules/concepts';
+import bills from './modules/bills';
 
 export const store = createStore({
   modules: {
@@ -24,6 +26,8 @@ export const store = createStore({
     agencies,
     remisiones,
     cartera,
-    box
+    box,
+    concepts,
+    bills
   }
 })
