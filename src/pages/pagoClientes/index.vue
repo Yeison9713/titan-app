@@ -30,32 +30,34 @@
           :disabled="true"
         ></f7-list-input>
 
-        <f7-list-item
-          title="Selecione el Rut"
-          smart-select
-          :smart-select-params="{
-            closeOnSelect: true,
-            setValueText: false,
-          }"
-          :after="
-            textValue(
-              'customers',
-              form.customer,
-              'identificacion_rut',
-              'descripcion_rut'
-            )
-          "
-        >
-          <select name="customers" v-model="form.customer">
-            <option
-              v-for="item in customers"
-              :key="item.identificacion_rut"
-              :value="item.identificacion_rut"
+        <f7-list-item-row>
+          <f7-row no-gap :style="{ width: '100%' }">
+            <f7-col width="80">
+              <f7-list-input
+                label="Cliente"
+                type="text"
+                outline
+                floating-label
+                :value="form.customer?.descripcion_rut"
+                disabled
+              />
+            </f7-col>
+            <f7-col
+              width="20"
+              :style="{ height: '100%' }"
+              class="display-flex align-items-center padding-right"
             >
-              {{ capitalize(item.descripcion_rut) }}
-            </option>
-          </select>
-        </f7-list-item>
+              <f7-button
+                fill
+                color="green"
+                :style="{ width: '100%', 'margin-top': '8px' }"
+                @click="searchState = true"
+              >
+                <f7-icon f7="search" size="22"></f7-icon>
+              </f7-button>
+            </f7-col>
+          </f7-row>
+        </f7-list-item-row>
 
         <f7-list-input
           label="Fecha corte"
@@ -85,6 +87,13 @@
       :params="popup_pago.params"
       @closed="popup_pago.estado = false"
     ></popup_pago>
+
+    <lookup
+      :estado="searchState"
+      :params="searchParams"
+      @callback="selectClient"
+      @closed="searchState = false"
+    />
   </f7-page>
 </template>
 
@@ -94,13 +103,26 @@ import { current_date } from "../../js/utils/global";
 import { loader, toast } from "../../js/utils/plugins";
 import popup_report from "./popup.vue";
 import popup_pago from "./popup_pago.vue";
+import lookup from "../../components/user/lookup.vue";
 export default {
   components: {
     popup_report,
     popup_pago,
+    lookup,
   },
   data() {
     return {
+      searchState: false,
+      searchParams: {
+        text: "Clientes",
+        vuex: {
+          getter: "customers/get_list",
+        },
+        columns: {
+          text: "descripcion_rut",
+          value: ["identificacion_rut"],
+        },
+      },
       popup_report: {
         estado: false,
         params: {
@@ -134,7 +156,6 @@ export default {
   computed: {
     ...mapGetters({
       data_config: "user/get_data_config",
-      customers: "customers/get_list",
       cartera: "cartera/get_list",
     }),
   },
@@ -195,6 +216,10 @@ export default {
       this.popup_report.estado = false;
       this.popup_pago.params.data = data;
       setTimeout(() => (this.popup_pago.estado = true), 500);
+    },
+    selectClient(item) {
+      this.form.customer = item;
+      this.searchState = false;
     },
   },
 };
