@@ -299,7 +299,7 @@ export default {
         let factura = k.factura_rep?.trim() || "";
         let vlr_abono = k.valor_abono || 0;
 
-        detalle[name] = `${prefijo}|${factura}|${vlr_abono}|`;
+        detalle[name] = `${prefijo}|${factura.replace(/,/g, "")}|${vlr_abono}|`;
       });
 
       return { data_send, detalle };

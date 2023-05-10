@@ -184,7 +184,7 @@ export default {
 
       let data = {
         agencia: this.form.agencia.codigo,
-        rut: this.form.customer,
+        rut: this.form.customer.identificacion_rut,
         fecha: this.form.fecha_corte.replaceAll("-", ""),
       };
 

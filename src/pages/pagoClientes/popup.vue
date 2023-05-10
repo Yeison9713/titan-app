@@ -120,11 +120,7 @@
                   <div class="block">
                     <f7-list-item>
                       <div
-                        class="
-                          width-100
-                          display-flex
-                          justify-content-space-between
-                        "
+                        class="width-100 display-flex justify-content-space-between"
                       >
                         <b>Agencia:</b>
                         <div>{{ item.agencia_rep }}</div>
@@ -133,11 +129,7 @@
 
                     <f7-list-item>
                       <div
-                        class="
-                          width-100
-                          display-flex
-                          justify-content-space-between
-                        "
+                        class="width-100 display-flex justify-content-space-between"
                       >
                         <b>Fecha:</b>
                         <div>{{ item.fecha_rep }}</div>
@@ -145,11 +137,7 @@
                     </f7-list-item>
                     <f7-list-item>
                       <div
-                        class="
-                          width-100
-                          display-flex
-                          justify-content-space-between
-                        "
+                        class="width-100 display-flex justify-content-space-between"
                       >
                         <b>Vencimiento:</b>
                         <div>{{ item.vence_rep }}</div>
@@ -157,11 +145,7 @@
                     </f7-list-item>
                     <f7-list-item>
                       <div
-                        class="
-                          width-100
-                          display-flex
-                          justify-content-space-between
-                        "
+                        class="width-100 display-flex justify-content-space-between"
                       >
                         <b>Dias:</b>
                         <div>{{ item.dias_rep.trim() }}</div>
@@ -169,11 +153,7 @@
                     </f7-list-item>
                     <f7-list-item>
                       <div
-                        class="
-                          width-100
-                          display-flex
-                          justify-content-space-between
-                        "
+                        class="width-100 display-flex justify-content-space-between"
                       >
                         <b>Por vencer:</b>
                         <div>{{ item.xvencer_rep }}</div>
@@ -181,11 +161,7 @@
                     </f7-list-item>
                     <f7-list-item>
                       <div
-                        class="
-                          width-100
-                          display-flex
-                          justify-content-space-between
-                        "
+                        class="width-100 display-flex justify-content-space-between"
                       >
                         <b>Vencido:</b>
                         <div>{{ item.vencido_rep }}</div>
@@ -193,11 +169,7 @@
                     </f7-list-item>
                     <f7-list-item>
                       <div
-                        class="
-                          width-100
-                          display-flex
-                          justify-content-space-between
-                        "
+                        class="width-100 display-flex justify-content-space-between"
                       >
                         <b>Total:</b>
                         <div>
@@ -315,7 +287,7 @@ export default {
     },
 
     addItem(item) {
-      let element = item?.path[0] || "";
+      let element = item?.target || "";
       let object = JSON.parse(element.value) || {};
       let checkbox = element.checked;
 

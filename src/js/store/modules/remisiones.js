@@ -45,7 +45,11 @@ export default {
                         let agencies = state.rootGetters['agencies/get_list']
                         let agencie = agencies.find(e => parseFloat(e.codigo_agc) == parseFloat(config_user.agencia.codigo))
 
-                        await state.dispatch('query_consecutive', { agencie, dato1 })
+                        await state.dispatch('query_consecutive', {
+                            agencie,
+                            dato1,
+                            prefijo: config_user?.prefijo
+                        })
                     }
 
                     resolve()
@@ -54,17 +58,17 @@ export default {
                 }
             })
         },
-        query_consecutive(state, { agencie, dato1 } = {}) {
+        query_consecutive(state, { agencie, dato1, prefijo } = {}) {
             return new Promise((resolve, reject) => {
                 try {
                     let info = state.rootGetters['middleware/get_info'] || {}
                     let ip_service = state.rootState.setting?.ip_service || ""
                     let date = current_date().split("/").reverse().join("")
 
-                    let data_consecutive = `|${dato1}|${agencie?.codigo_agc}|REM|0|${date}|01|`
+                    let data_consecutive = `|${dato1}|${agencie?.codigo_agc}|REM|0|${date}|${prefijo}|`
 
                     if (dato1 == '1') {
-                        data_consecutive = `|${dato1}|${agencie?.codigo_agc}|050|${date}|`
+                        data_consecutive = `|${dato1}|${agencie?.codigo_agc}|050|0|${date}|${prefijo}|`
                     }
 
                     let data = {

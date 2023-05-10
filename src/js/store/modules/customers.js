@@ -68,7 +68,7 @@ export default {
                 let ip_service = state.rootState.setting?.ip_service || ""
 
                 let data = {
-                    data: info.session + "|",
+                    data: info.session + "|1|",
                     url: state.rootGetters['setting/get_url']('customers'),
                 }
 
