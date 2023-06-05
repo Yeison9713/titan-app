@@ -32,6 +32,10 @@ export default {
             concepts: "Financiero/dlls/CfconceptosJ.dll",
             bills: "Ptovta/dlls/PREgresoM.dll",
             print_bills: "Ptovta/dlls/PrReimpcbJV.DLL",
+            override_referral: "Ptovta/dlls/PranulaRem.dll",
+            location: "Financiero/dlls/CfUbicacionesJ.dll",
+            products_2: "PtoVta/dlls/CfProductosJ.dll",
+            see_portfolio: "Ptovta/dlls/RpSaldos1J.DLL"
         },
         data: {},
         menu_user: [],

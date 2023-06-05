@@ -9,6 +9,7 @@ import Remisiones from "../pages/remisiones/remisiones.vue"
 import RemisionesImpresion from "../pages/remisiones/impresiones.vue"
 
 import ReporteCartera from "../pages/reportes/cartera.vue"
+import ReporteInventarios from "../pages/reportes/saldoInventarios.vue"
 
 import PagoClientes from '../pages/pagoClientes/index.vue'
 import ReImpresionPagoClientes from '../pages/pagoClientes/reImpresion.vue'
@@ -31,15 +32,16 @@ var routes = [
 
   securedRoute('/ingreso/', Ingreso),
   securedRoute('/usuario/', User),
-  securedRoute('/usuario/synapp/', SyncApp),
+  securedRoute('/usuario/syncapp/', SyncApp),
   securedRoute('/remisiones/facturar/', Remisiones),
   securedRoute('/remisiones/imprimir/', RemisionesImpresion),
 
   securedRoute('/reporte/cartera/', ReporteCartera),
+  securedRoute('/reporte/saldoInventarios/', ReporteInventarios),
 
   securedRoute('/pago_clientes/index/', PagoClientes),
   securedRoute('/pago_clientes/reimprimir/', ReImpresionPagoClientes),
-  
+
   securedRoute('/gastos/index/', Gastos),
   securedRoute('/gastos/reimprimir/', ReImpresionGastos),
 

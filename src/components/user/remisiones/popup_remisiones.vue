@@ -22,6 +22,7 @@
                     class="accordion-item swipeout"
                     v-for="(item, index) in array"
                     :key="index"
+                    :style="setStyle(item)"
                   >
                     <a class="item-content item-link" href="#">
                       <div class="item-inner swipeout-content">
@@ -55,6 +56,14 @@
                           class="swipeout-red"
                           color="gray"
                           @click="print_pdf(item)"
+                        ></f7-link>
+                        <f7-link
+                          icon-f7="trash"
+                          icon-color="white"
+                          icon-size="24"
+                          class="swipeout-red"
+                          color="red"
+                          @click="open_sheet(item)"
                         ></f7-link>
                       </div>
                     </a>
@@ -110,16 +119,27 @@
         </f7-card>
       </f7-page>
     </f7-view>
+    <comment_sheet
+      :estado="sheet.estado"
+      :params="sheet"
+      @closed="sheet.estado = false"
+      @callback="anularRemision"
+    >
+    </comment_sheet>
   </f7-popup>
 </template>
 
 <script>
-import { format_num } from "../../../js/utils/plugins";
+import { format_num, loader, toast } from "../../../js/utils/plugins";
 import { imprimir } from "../../../js/utils/print";
 import _ from "lodash";
 import { mapGetters } from "vuex";
+import comment_sheet from "./comment_sheet.vue";
 
 export default {
+  components: {
+    comment_sheet,
+  },
   props: {
     estado: Boolean,
     params: {
@@ -129,6 +149,10 @@ export default {
   data() {
     return {
       array: [],
+      sheet: {
+        estado: false,
+        data: null,
+      },
       totales: {
         xVencer: null,
         vencido: null,
@@ -155,19 +179,20 @@ export default {
       this.$emit("closed", false);
     },
     async print_pdf(item) {
-      let dispatch = this.$store.dispatch;
-
-      let data = `${item.agencia_fact}|${item.pref_fact}|${
-        item.numero_fact
-      }|${item.fecha_fact.substr(0, 4)}|`;
-
-      const response = await dispatch("remisiones/post_print", data);
-
-      const order_data = await dispatch("remisiones/order_data_print", {
-        data: response.message[0],
-      });
-
       try {
+        loader(true);
+        let dispatch = this.$store.dispatch;
+
+        let data = `${item.agencia_fact}|${item.pref_fact}|${
+          item.numero_fact
+        }|${item.fecha_fact.substr(0, 4)}|`;
+
+        const response = await dispatch("remisiones/post_print", data);
+
+        const order_data = await dispatch("remisiones/order_data_print", {
+          data: response.message[0],
+        });
+
         imprimir({
           data: _.cloneDeep({
             ...order_data,
@@ -191,16 +216,53 @@ export default {
                 error: function (data) {
                   data = JSON.parse(Data);
                   console.log("failed" + data.error);
+                  toast("Error imprimiendo remisión");
                 },
               });
             }
+
+            loader(false);
           })
           .catch((err) => {
+            loader(false);
             console.log(err);
+            toast("Error imprimiendo remisión");
           });
       } catch (error) {
         console.log(error);
+        toast("Error imprimiendo remisión");
       }
+    },
+    open_sheet(item) {
+      this.sheet.data = item;
+      this.sheet.estado = true;
+    },
+    async anularRemision(item) {
+      try {
+        loader(true);
+        let dispatch = this.$store.dispatch;
+        let ano = item.fecha_fact.substr(0, 4);
+        let comment = item.comment;
+        let send_data = `${item.agencia_fact}|${item.pref_fact}|${item.numero_fact}|${ano}|${comment}|`;
+
+        await dispatch("remisiones/anular_remisio", send_data);
+
+        // let find = this.array.find(e=> e.numero_fact == item.numero_fact )
+
+        this.sheet.estado = false;
+
+        loader(false);
+      } catch (error) {
+        console.log(error);
+        toast("Error anulando remisión");
+        loader(true);
+      }
+    },
+    setStyle(item) {
+      console.log("estado_fact: ", item.estado_fact);
+      return item.estado_fact != "1"
+        ? {}
+        : { background: "rgb(249 91 107)", color: "white !important" };
     },
   },
 };

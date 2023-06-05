@@ -13,6 +13,7 @@ import cartera from './modules/cartera';
 import box from './modules/box';
 import concepts from './modules/concepts';
 import bills from './modules/bills';
+import locations from './modules/locations';
 
 export const store = createStore({
   modules: {
@@ -28,6 +29,7 @@ export const store = createStore({
     cartera,
     box,
     concepts,
-    bills
+    bills,
+    locations
   }
 })

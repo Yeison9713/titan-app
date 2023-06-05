@@ -270,8 +270,6 @@ export default {
                         state.commit("set_referrals", res.message.filter(e => e.agencia_fact != "").reverse())
                         resolve()
                     }).catch(reject)
-
-                resolve();
             })
         },
 
@@ -317,5 +315,26 @@ export default {
 
             })
         },
+
+        anular_remisio(state, send_data) {
+            return new Promise((resolve, reject) => {
+                try {
+                    let info = state.rootGetters['middleware/get_info'] || {}
+                    let ip_service = state.rootState.setting?.ip_service || ""
+
+                    let data = {
+                        data: info.session + "|" + send_data + "|",
+                        url: state.rootGetters['setting/get_url']('override_referral'),
+                    }
+
+                    request_titan({ url: ip_service, data })
+                        .then(resolve)
+                        .catch(reject)
+
+                } catch (error) {
+                    reject(error)
+                }
+            })
+        }
     }
 }

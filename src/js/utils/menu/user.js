@@ -86,6 +86,11 @@ export const menu_user = [
                 name: "Cierre caja",
                 link: '/caja/cierre/'
             },
+            {
+                id: 23,
+                name: "Saldo mercancias",
+                link: '/reporte/saldoInventarios/'
+            },
         ]
     },
     {
@@ -106,7 +111,7 @@ export const menu_user = [
             {
                 id: 32,
                 name: "Sincronizar mobile",
-                link: '/usuario/synapp/'
+                link: '/usuario/syncapp/'
             }
         ],
     },
