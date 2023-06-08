@@ -43,7 +43,7 @@
                             class="text-align-right"
                             :style="{ 'font-size': '12px' }"
                           >
-                            Fact. {{ format_num(item.numero_fact) }}
+                            Fact. {{ item.numero_fact }}
                           </f7-col>
                         </f7-row>
                       </div>
@@ -172,9 +172,7 @@ export default {
   },
   methods: {
     format_num,
-    open() {
-      // this.array = this.params.data || [];
-    },
+    open() {},
     closed() {
       this.$emit("closed", false);
     },
@@ -183,9 +181,12 @@ export default {
         loader(true);
         let dispatch = this.$store.dispatch;
 
-        let data = `${item.agencia_fact}|${item.pref_fact}|${
-          item.numero_fact
-        }|${item.fecha_fact.substr(0, 4)}|`;
+        let { agencia_fact, pref_fact, numero_fact, fecha_fact } = item;
+
+        fecha_fact = fecha_fact.substr(0, 4);
+        numero_fact = numero_fact.replace(/,/g, "");
+
+        let data = `${agencia_fact}|${pref_fact}|${numero_fact}|${fecha_fact}|`;
 
         const response = await dispatch("remisiones/post_print", data);
 
@@ -214,8 +215,7 @@ export default {
                   console.log("success");
                 },
                 error: function (data) {
-                  data = JSON.parse(Data);
-                  console.log("failed" + data.error);
+                  console.log("failed: " + data);
                   toast("Error imprimiendo remisión");
                 },
               });
